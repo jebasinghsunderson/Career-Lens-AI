@@ -70,7 +70,7 @@ const LABELS = {
 
   academicYear: "Current Academic Year",
   academicYearPlaceholder: "Select current year",
-  academicYearOptions: ["1st Year", "2nd Year", "3rd Year", "4th Year"],
+  academicYearOptions: ["1st Year", "2nd Year", "3rd Year", "4th Year", "Final Year"],
 
   gradYear: "Expected Graduation Year",
   gradYearPlaceholder: "Select graduation year",
@@ -107,17 +107,11 @@ const REQUIRED_FIELDS = [
   "dob",
   "gender",
   "nationality",
-  "email",
   "mobile",
   "state",
   "district",
   "pinCode",
   "highestQualification",
-  "currentCourse",
-  "collegeName",
-  "branch",
-  "academicYear",
-  "gradYear",
 ];
 
 // ============================================================
@@ -254,7 +248,8 @@ export default function StudentDetailsPage() {
   const isFormComplete = useMemo(() => {
     const allFilled = REQUIRED_FIELDS.every((f) => String(form[f]).trim() !== "");
     const noErrors = Object.keys(errors).length === 0;
-    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
+    // Email is optional — only enforce a valid format if the student entered one.
+    const emailValid = form.email.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
     const mobileValid = /^[6-9]\d{9}$/.test(form.mobile);
     const pinValid = /^\d{6}$/.test(form.pinCode);
     return allFilled && noErrors && emailValid && mobileValid && pinValid;
@@ -619,7 +614,6 @@ export default function StudentDetailsPage() {
 
               <FieldWrapper
                 label={LABELS.email}
-                required
                 htmlFor="email"
                 error={errors.email}
               >
@@ -723,7 +717,7 @@ export default function StudentDetailsPage() {
                 />
               </FieldWrapper>
 
-              <FieldWrapper label={LABELS.currentCourse} required htmlFor="currentCourse">
+              <FieldWrapper label={LABELS.currentCourse} htmlFor="currentCourse">
                 <TextInput
                   id="currentCourse"
                   value={form.currentCourse}
@@ -733,7 +727,7 @@ export default function StudentDetailsPage() {
               </FieldWrapper>
 
               <div className="gds-field-full">
-                <FieldWrapper label={LABELS.collegeName} required htmlFor="collegeName">
+                <FieldWrapper label={LABELS.collegeName} htmlFor="collegeName">
                   <TextInput
                     id="collegeName"
                     value={form.collegeName}
@@ -743,7 +737,7 @@ export default function StudentDetailsPage() {
                 </FieldWrapper>
               </div>
 
-              <FieldWrapper label={LABELS.branch} required htmlFor="branch">
+              <FieldWrapper label={LABELS.branch} htmlFor="branch">
                 <TextInput
                   id="branch"
                   value={form.branch}
@@ -752,7 +746,7 @@ export default function StudentDetailsPage() {
                 />
               </FieldWrapper>
 
-              <FieldWrapper label={LABELS.academicYear} required htmlFor="academicYear">
+              <FieldWrapper label={LABELS.academicYear} htmlFor="academicYear">
                 <SelectInput
                   id="academicYear"
                   value={form.academicYear}
@@ -762,7 +756,7 @@ export default function StudentDetailsPage() {
                 />
               </FieldWrapper>
 
-              <FieldWrapper label={LABELS.gradYear} required htmlFor="gradYear">
+              <FieldWrapper label={LABELS.gradYear} htmlFor="gradYear">
                 <SelectInput
                   id="gradYear"
                   value={form.gradYear}
