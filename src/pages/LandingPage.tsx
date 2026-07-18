@@ -1,10 +1,71 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TopBar } from '../components/TopBar';
 import { Header } from '../components/Header';
 import { NavBar } from '../components/NavBar';
-import { useNavigate } from 'react-router-dom';
 import { Search, ChevronRight, UserCheck, AlertCircle } from 'lucide-react';
 import { Footer } from '../components/Footer';
+
+// Company list with logo.dev domain + brand color fallback
+const companies: { name: string; domain: string; abbr: string; color: string }[] = [
+  { name: 'Tech Mahindra', domain: 'techmahindra.com', abbr: 'TM', color: '#E31837' },
+  { name: 'Wipro', domain: 'wipro.com', abbr: 'WI', color: '#341F97' },
+  { name: 'TCS', domain: 'tcs.com', abbr: 'TCS', color: '#000' },
+  { name: 'Infosys', domain: 'infosys.com', abbr: 'IN', color: '#007CC3' },
+  { name: 'HCL Technologies', domain: 'hcltech.com', abbr: 'HCL', color: '#0076CE' },
+  { name: 'Bajaj Allianz', domain: 'bajajallianz.com', abbr: 'BA', color: '#003399' },
+  { name: 'Adani Group', domain: 'adani.com', abbr: 'AD', color: '#00529B' },
+  { name: 'Berger Paints', domain: 'bergerpaints.com', abbr: 'BP', color: '#E31837' },
+  { name: 'NHPC', domain: 'nhpcindia.com', abbr: 'NH', color: '#006400' },
+  { name: 'Signify', domain: 'signify.com', abbr: 'SG', color: '#00A1D6' },
+  { name: 'L&T', domain: 'larsentoubro.com', abbr: 'L&T', color: '#1A3C6E' },
+  { name: 'HDFC Bank', domain: 'hdfcbank.com', abbr: 'HDF', color: '#00408B' },
+  { name: 'Maruti Suzuki', domain: 'marutisuzuki.com', abbr: 'MS', color: '#C00' },
+  { name: 'Tata Motors', domain: 'tatamotors.com', abbr: 'TATA', color: '#003399' },
+  { name: 'Mahindra', domain: 'mahindra.com', abbr: 'MH', color: '#D5001C' },
+  { name: 'Reliance', domain: 'ril.com', abbr: 'RI', color: '#003399' },
+];
+
+const CompanyLogo: React.FC<{ name: string; domain: string; abbr: string; color: string }> = ({ name, domain, abbr, color }) => {
+  const [iconFailed, setIconFailed] = useState(false);
+
+  // Google's favicon service — always free, always works, no API key needed
+  const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+
+  return (
+    <div className="flex items-center gap-3 shrink-0 px-5 h-16 hover:opacity-80 transition-opacity duration-200 group">
+      {/* Icon area */}
+      <div
+        className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0 overflow-hidden border border-gray-100 bg-white shadow-sm"
+        style={{ minWidth: 40 }}
+      >
+        {!iconFailed ? (
+          <img
+            src={faviconUrl}
+            alt={name}
+            width={32}
+            height={32}
+            className="w-8 h-8 object-contain"
+            onError={() => setIconFailed(true)}
+          />
+        ) : (
+          <span
+            className="text-white font-extrabold text-[9px] text-center leading-tight px-0.5"
+            style={{ backgroundColor: color }}
+          >
+            {abbr}
+          </span>
+        )}
+      </div>
+      {/* Company name */}
+      <span className="text-[13px] font-semibold text-gray-700 whitespace-nowrap leading-tight group-hover:text-gray-900 transition-colors">
+        {name}
+      </span>
+    </div>
+  );
+};
+
+// Vertical divider between logos
+const Divider = () => <div className="w-px h-9 bg-gray-200 shrink-0 self-center" />;
 
 export const LandingPage: React.FC = () => {
   return (
@@ -12,7 +73,6 @@ export const LandingPage: React.FC = () => {
       <TopBar />
       <Header />
       <NavBar />
-
 
       {/* Hero Section */}
       <main className="flex-1 p-4 sm:p-6 lg:p-8">
@@ -23,7 +83,6 @@ export const LandingPage: React.FC = () => {
 
           {/* Left Content Area */}
           <div className="relative z-10 w-full lg:w-[40%] p-8 sm:p-12 lg:pl-16 flex flex-col justify-center">
-
             <div className="flex flex-col mb-4 relative z-10">
               <h1 className="text-5xl sm:text-6xl font-extrabold text-white leading-[1.1] tracking-tight flex items-center gap-3">
                 Learn
@@ -49,7 +108,6 @@ export const LandingPage: React.FC = () => {
           {/* Middle Content - Bounding Box Text */}
           <div className="relative z-10 w-full lg:w-[25%] flex items-center justify-center lg:justify-start p-6 lg:p-0">
             <div className="relative border border-white/60 p-5 rounded-sm transform -rotate-6 bg-white/5 backdrop-blur-sm shadow-lg max-w-[280px]">
-              {/* Anchor points */}
               <div className="absolute -top-1 -left-1 w-2 h-2 bg-white shadow-sm"></div>
               <div className="absolute -top-1 -right-1 w-2 h-2 bg-white shadow-sm"></div>
               <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-white shadow-sm"></div>
@@ -61,7 +119,6 @@ export const LandingPage: React.FC = () => {
                 <span className="font-extrabold">future-ready workforce</span>
               </p>
 
-              {/* Fake cursor icon */}
               <div className="absolute -bottom-5 -right-4 w-5 h-5 text-white drop-shadow-md transform rotate-12 z-20">
                 <svg viewBox="0 0 24 24" fill="currentColor" stroke="black" strokeWidth="1.5" xmlns="http://www.w3.org/2000/svg">
                   <path d="M5.5 3L18 13.5L12 14.5L15 21.5L11.5 22.5L8.5 15.5L4 18.5V3Z" />
@@ -72,12 +129,9 @@ export const LandingPage: React.FC = () => {
 
           {/* Right Image Area */}
           <div className="relative w-full lg:w-[35%] h-[350px] lg:h-auto z-0 overflow-hidden rounded-r-xl flex items-end justify-center lg:justify-end">
-            {/* Soft Radial Glow behind PM Modi */}
             <div className="absolute top-[40%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-white/40 rounded-full blur-[80px] pointer-events-none"></div>
-
             <img
               src="/pm-modi.avif"
-
               alt="PM Narendra Modi"
               className="w-full h-full object-cover object-bottom relative z-10 drop-shadow-[0_10px_20px_rgba(0,0,0,0.2)]"
               style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%)', maskImage: 'linear-gradient(to right, transparent, black 15%)' }}
@@ -85,48 +139,53 @@ export const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Companies Ticker */}
-        <div className="w-full max-w-7xl mx-auto mt-6 mb-8 bg-white py-4 px-2 overflow-hidden">
-          <div className="flex flex-col sm:flex-row justify-between items-center mb-8 px-4 border-b border-gray-100 pb-4">
-            <div className="flex items-center gap-2 text-[#103058] font-bold text-lg">
-              <span className="w-[18px] h-[18px] rounded-full border-2 border-[#103058] flex items-center justify-center text-[11px] font-extrabold pb-[1px]">i</span>
+        {/* ── Companies Ticker ── */}
+        <div className="w-full max-w-7xl mx-auto mt-6 mb-8 bg-white border border-gray-100 shadow-sm">
+
+          {/* Header row */}
+          <div className="flex flex-col sm:flex-row justify-between items-center px-5 py-3 border-b border-gray-100">
+            <div className="flex items-center gap-2 text-[#103058] font-bold text-sm">
+              <span className="w-[16px] h-[16px] rounded-full border-2 border-[#103058] flex items-center justify-center text-[10px] font-extrabold">i</span>
               Paid internships in top companies
             </div>
-            <div className="relative mt-4 sm:mt-0 w-full sm:w-64">
+            <div className="relative mt-3 sm:mt-0 w-full sm:w-56">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search size={16} className="text-gray-400" />
+                <Search size={14} className="text-gray-400" />
               </div>
-              <input type="text" placeholder="Search company" className="w-full pl-10 pr-4 py-1.5 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 shadow-sm" />
+              <input
+                type="text"
+                placeholder="Search company"
+                className="w-full pl-9 pr-4 py-1.5 border border-gray-300 rounded-full text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 shadow-sm"
+              />
             </div>
           </div>
 
-          {/* Marquee Animation */}
-          <div className="relative w-full flex overflow-hidden mask-image-linear-gradient">
-            {/* The wrapping container must have width > 100% and animation */}
-            <div className="flex whitespace-nowrap animate-marquee items-center min-w-[200%]">
-
+          {/* Scrolling logos strip — exactly like the reference image */}
+          <div
+            className="relative w-full overflow-hidden py-3"
+            style={{
+              maskImage: 'linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%)',
+            }}
+          >
+            <div
+              className="flex items-center animate-marquee"
+              style={{ width: 'max-content' }}
+            >
               {/* Set 1 */}
-              <div className="flex items-center justify-around w-1/2 px-4 gap-8">
-                <img src="https://logo.clearbit.com/signify.com" alt="Signify" className="h-8 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                <img src="https://logo.clearbit.com/bajajallianz.com" alt="Bajaj Allianz" className="h-10 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                <img src="https://logo.clearbit.com/adani.com" alt="Adani" className="h-8 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                <img src="https://logo.clearbit.com/nhpcindia.com" alt="NHPC" className="h-12 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                <img src="https://logo.clearbit.com/bergerpaints.com" alt="Berger" className="h-12 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                <img src="https://logo.clearbit.com/wipro.com" alt="Wipro" className="h-10 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                <img src="https://logo.clearbit.com/tcs.com" alt="TCS" className="h-8 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-              </div>
-
-              {/* Set 2 (Duplicate for seamless loop) */}
-              <div className="flex items-center justify-around w-1/2 px-4 gap-8">
-                <img src="https://logo.clearbit.com/signify.com" alt="Signify" className="h-8 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                <img src="https://logo.clearbit.com/bajajallianz.com" alt="Bajaj Allianz" className="h-10 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                <img src="https://logo.clearbit.com/adani.com" alt="Adani" className="h-8 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                <img src="https://logo.clearbit.com/nhpcindia.com" alt="NHPC" className="h-12 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                <img src="https://logo.clearbit.com/bergerpaints.com" alt="Berger" className="h-12 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                <img src="https://logo.clearbit.com/wipro.com" alt="Wipro" className="h-10 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-                <img src="https://logo.clearbit.com/tcs.com" alt="TCS" className="h-8 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
-              </div>
-
+              {companies.map((c, i) => (
+                <React.Fragment key={`a-${i}`}>
+                  <CompanyLogo {...c} />
+                  <Divider />
+                </React.Fragment>
+              ))}
+              {/* Set 2 — duplicate for seamless loop */}
+              {companies.map((c, i) => (
+                <React.Fragment key={`b-${i}`}>
+                  <CompanyLogo {...c} />
+                  <Divider />
+                </React.Fragment>
+              ))}
             </div>
           </div>
         </div>
@@ -158,7 +217,10 @@ export const LandingPage: React.FC = () => {
               <div className="w-16 h-16 bg-white rounded-2xl flex flex-col items-center justify-center text-rose-500 border-[3px] border-white shadow-lg ring-2 ring-gray-200">
                 <div className="w-8 h-2 bg-gray-200 rounded-sm mb-1"></div>
                 <UserCheck size={20} className="mb-1 text-slate-800" />
-                <div className="flex gap-1"><div className="w-3 h-1 bg-rose-500 rounded-sm"></div><div className="w-3 h-1 bg-rose-500 rounded-sm"></div></div>
+                <div className="flex gap-1">
+                  <div className="w-3 h-1 bg-rose-500 rounded-sm"></div>
+                  <div className="w-3 h-1 bg-rose-500 rounded-sm"></div>
+                </div>
               </div>
               <span>Compare internships<br />before applying</span>
             </div>
@@ -174,7 +236,7 @@ export const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Background decorative elements for the banner */}
+          {/* Background decorative elements */}
           <div className="absolute top-0 right-1/2 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
         </div>

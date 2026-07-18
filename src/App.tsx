@@ -6,6 +6,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import StudentDetailsPage from './pages/StudentDetailsPage';
 import InternshipPreferencesPage from './pages/InternshipPreferencesPage';
 import ResumeUploadPage from './pages/ResumeUploadPage';
+import RecommendedCompaniesPage from './pages/RecommendedCompaniesPage';
 import { LanguageProvider } from './context/LanguageContext';
 import { LanguageModal } from './components/LanguageModal';
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/onboarding/student-details" element={<StudentDetailsPage />} />
           <Route path="/onboarding/preferences" element={<InternshipPreferencesPage />} />
           <Route path="/onboarding/resume" element={<ResumeUploadPage />} />
+          <Route path="/recommended" element={<RecommendedCompaniesPage />} />
         </Routes>
       </BrowserRouter>
     </LanguageProvider>

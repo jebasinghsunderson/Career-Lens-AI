@@ -4,19 +4,15 @@ import { useNavigate } from "react-router-dom";
 
 // ============================================================
 // i18n-ready label map
-// All static text lives here so it can later be swapped for
-// i18next `t('key')` calls without touching component markup.
 // ============================================================
 const LABELS = {
   pageTitle: "Student Information",
   pageSubtitle:
-    "Complete your profile to receive internship recommendations that match your education, skills and interests.",
-  stepIndicator: "Step 1 of 3",
+    "Complete your profile to receive internship recommendations that match your skills and interests.",
+  stepIndicator: "Step 1 of 2",
   stepName: "Student Details",
 
   sectionPersonal: "Personal Details",
-  sectionAddress: "Permanent Address",
-  sectionEducation: "Educational Details",
 
   studentName: "Student Name",
   studentNameHelper: "As per official ID",
@@ -43,44 +39,6 @@ const LABELS = {
   mobilePlaceholder: "10-digit mobile number",
   mobileError: "Enter a valid 10-digit mobile number",
 
-  state: "State",
-  statePlaceholder: "Select state",
-  district: "District",
-  districtPlaceholder: "Enter district",
-  pinCode: "PIN Code",
-  pinCodePlaceholder: "6-digit PIN code",
-  pinCodeError: "Enter a valid 6-digit PIN code",
-
-  highestQualification: "Highest Qualification",
-  highestQualificationPlaceholder: "Select highest qualification",
-  qualificationOptions: [
-    "10th Pass",
-    "12th Pass",
-    "Diploma",
-    "Undergraduate",
-    "Postgraduate",
-  ],
-
-  currentCourse: "Current Course",
-  currentCoursePlaceholder: "e.g. B.Tech, B.Sc, B.Com",
-
-  collegeName: "College / University",
-  collegeNamePlaceholder: "Enter college or university name",
-
-  branch: "Branch / Specialization",
-  branchPlaceholder: "e.g. Computer Science, Mechanical",
-
-  academicYear: "Current Academic Year",
-  academicYearPlaceholder: "Select current year",
-  academicYearOptions: ["1st Year", "2nd Year", "3rd Year", "4th Year", "Final Year"],
-
-  gradYear: "Expected Graduation Year",
-  gradYearPlaceholder: "Select graduation year",
-
-  cgpa: "CGPA / Percentage",
-  cgpaHelper: "Optional",
-  cgpaPlaceholder: "e.g. 8.2 or 78%",
-
   requiredMark: "Required",
   optionalMark: "Optional",
 
@@ -92,17 +50,6 @@ const LABELS = {
   btnSaveDraft: "Save Draft",
 };
 
-const INDIAN_STATES = [
-  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
-  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
-  "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya",
-  "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim",
-  "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand",
-  "West Bengal", "Delhi (NCT)", "Jammu and Kashmir", "Ladakh",
-];
-
-const GRAD_YEARS = Array.from({ length: 8 }, (_, i) => String(2024 + i));
-
 // Fields that must be filled for the Continue button to enable.
 const REQUIRED_FIELDS = [
   "studentName",
@@ -110,10 +57,6 @@ const REQUIRED_FIELDS = [
   "gender",
   "nationality",
   "mobile",
-  "state",
-  "district",
-  "pinCode",
-  "highestQualification",
 ];
 
 // ============================================================
@@ -181,7 +124,7 @@ function SelectInput({ id, value, onChange, placeholder, options, error }) {
   );
 }
 
-// Info icon (government-style, inline SVG, no external assets)
+// Info icon (government-style, inline SVG)
 function InfoIcon() {
   return (
     <svg
@@ -212,16 +155,6 @@ export default function StudentDetailsPage() {
     nationality: "",
     email: "",
     mobile: "",
-    state: "",
-    district: "",
-    pinCode: "",
-    highestQualification: "",
-    currentCourse: "",
-    collegeName: "",
-    branch: "",
-    academicYear: "",
-    gradYear: "",
-    cgpa: "",
   });
 
   const [touched, setTouched] = useState({});
@@ -242,31 +175,24 @@ export default function StudentDetailsPage() {
     if (touched.mobile && form.mobile && !/^[6-9]\d{9}$/.test(form.mobile)) {
       e.mobile = LABELS.mobileError;
     }
-    if (touched.pinCode && form.pinCode && !/^\d{6}$/.test(form.pinCode)) {
-      e.pinCode = LABELS.pinCodeError;
-    }
     return e;
   }, [form, touched]);
 
   const isFormComplete = useMemo(() => {
     const allFilled = REQUIRED_FIELDS.every((f) => String(form[f]).trim() !== "");
     const noErrors = Object.keys(errors).length === 0;
-    // Email is optional â€” only enforce a valid format if the student entered one.
     const emailValid = form.email.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
     const mobileValid = /^[6-9]\d{9}$/.test(form.mobile);
-    const pinValid = /^\d{6}$/.test(form.pinCode);
-    return allFilled && noErrors && emailValid && mobileValid && pinValid;
+    return allFilled && noErrors && emailValid && mobileValid;
   }, [form, errors]);
 
   const handleSaveContinue = () => {
     if (!isFormComplete) return;
-    // Integration point: parent app supplies the actual navigation/submit handler.
     console.log("Form submitted:", form);
     navigate('/onboarding/resume');
   };
 
   const handleSaveDraft = () => {
-    // Integration point: parent app supplies draft-persistence handler.
     console.log("Draft saved:", form);
   };
 
@@ -526,6 +452,8 @@ export default function StudentDetailsPage() {
           color: #fff;
         }
 
+
+
         @media (max-width: 480px) {
           .gds-actions {
             flex-direction: column-reverse;
@@ -563,6 +491,7 @@ export default function StudentDetailsPage() {
 
         {/* ============ FORM ============ */}
         <form onSubmit={(e) => e.preventDefault()} noValidate>
+
           {/* ---- Personal Details ---- */}
           <section className="gds-section" aria-labelledby="section-personal">
             <h2 className="gds-section-title" id="section-personal">
@@ -655,137 +584,13 @@ export default function StudentDetailsPage() {
             </div>
           </section>
 
-          {/* ---- Permanent Address ---- */}
-          <section className="gds-section" aria-labelledby="section-address">
-            <h2 className="gds-section-title" id="section-address">
-              {LABELS.sectionAddress}
-            </h2>
-            <div className="gds-section-grid">
-              <FieldWrapper label={LABELS.state} required htmlFor="state">
-                <SelectInput
-                  id="state"
-                  value={form.state}
-                  onChange={setField("state")}
-                  placeholder={LABELS.statePlaceholder}
-                  options={INDIAN_STATES}
-                />
-              </FieldWrapper>
-
-              <FieldWrapper label={LABELS.district} required htmlFor="district">
-                <TextInput
-                  id="district"
-                  value={form.district}
-                  onChange={setField("district")}
-                  placeholder={LABELS.districtPlaceholder}
-                />
-              </FieldWrapper>
-
-              <FieldWrapper
-                label={LABELS.pinCode}
-                required
-                htmlFor="pinCode"
-                error={errors.pinCode}
-              >
-                <TextInput
-                  id="pinCode"
-                  inputMode="numeric"
-                  value={form.pinCode}
-                  onChange={(v) => {
-                    setField("pinCode")(v.replace(/\D/g, "").slice(0, 6));
-                    markTouched("pinCode")();
-                  }}
-                  placeholder={LABELS.pinCodePlaceholder}
-                  error={errors.pinCode}
-                />
-              </FieldWrapper>
-            </div>
-          </section>
-
-          {/* ---- Educational Details ---- */}
-          <section className="gds-section" aria-labelledby="section-education">
-            <h2 className="gds-section-title" id="section-education">
-              {LABELS.sectionEducation}
-            </h2>
-            <div className="gds-section-grid">
-              <FieldWrapper
-                label={LABELS.highestQualification}
-                required
-                htmlFor="highestQualification"
-              >
-                <SelectInput
-                  id="highestQualification"
-                  value={form.highestQualification}
-                  onChange={setField("highestQualification")}
-                  placeholder={LABELS.highestQualificationPlaceholder}
-                  options={LABELS.qualificationOptions}
-                />
-              </FieldWrapper>
-
-              <FieldWrapper label={LABELS.currentCourse} htmlFor="currentCourse">
-                <TextInput
-                  id="currentCourse"
-                  value={form.currentCourse}
-                  onChange={setField("currentCourse")}
-                  placeholder={LABELS.currentCoursePlaceholder}
-                />
-              </FieldWrapper>
-
-              <div className="gds-field-full">
-                <FieldWrapper label={LABELS.collegeName} htmlFor="collegeName">
-                  <TextInput
-                    id="collegeName"
-                    value={form.collegeName}
-                    onChange={setField("collegeName")}
-                    placeholder={LABELS.collegeNamePlaceholder}
-                  />
-                </FieldWrapper>
-              </div>
-
-              <FieldWrapper label={LABELS.branch} htmlFor="branch">
-                <TextInput
-                  id="branch"
-                  value={form.branch}
-                  onChange={setField("branch")}
-                  placeholder={LABELS.branchPlaceholder}
-                />
-              </FieldWrapper>
-
-              <FieldWrapper label={LABELS.academicYear} htmlFor="academicYear">
-                <SelectInput
-                  id="academicYear"
-                  value={form.academicYear}
-                  onChange={setField("academicYear")}
-                  placeholder={LABELS.academicYearPlaceholder}
-                  options={LABELS.academicYearOptions}
-                />
-              </FieldWrapper>
-
-              <FieldWrapper label={LABELS.gradYear} htmlFor="gradYear">
-                <SelectInput
-                  id="gradYear"
-                  value={form.gradYear}
-                  onChange={setField("gradYear")}
-                  placeholder={LABELS.gradYearPlaceholder}
-                  options={GRAD_YEARS}
-                />
-              </FieldWrapper>
-
-              <FieldWrapper label={LABELS.cgpa} helper={LABELS.cgpaHelper} htmlFor="cgpa">
-                <TextInput
-                  id="cgpa"
-                  value={form.cgpa}
-                  onChange={setField("cgpa")}
-                  placeholder={LABELS.cgpaPlaceholder}
-                />
-              </FieldWrapper>
-            </div>
-          </section>
-
           {/* ---- Privacy note ---- */}
           <div className="gds-privacy-note">
             <InfoIcon />
             <p className="gds-privacy-text">{LABELS.privacyNote}</p>
           </div>
+
+
 
           {/* ---- Bottom actions ---- */}
           <div className="gds-actions">
@@ -815,4 +620,3 @@ export default function StudentDetailsPage() {
     </div>
   );
 }
-

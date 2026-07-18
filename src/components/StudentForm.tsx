@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useNavigate } from 'react-router-dom';
-import { User, Mail, Phone, Lock, MapPin, GraduationCap } from 'lucide-react';
+import { User, Mail, Phone, Lock, MapPin } from 'lucide-react';
 import { FormField } from './FormField';
 import { SelectField } from './SelectField';
 import { Button } from './Button';
@@ -13,15 +13,10 @@ const studentSchema = z.object({
   email: z.string().email('Invalid email format'),
   phone: z.string().min(10, 'Phone number must be at least 10 digits'),
   password: z.string().min(6, 'Password must contain at least 6 characters'),
-  confirmPassword: z.string(),
-  qualification: z.string().min(1, 'Please select a qualification'),
   location: z.string().min(1, 'Please select a location'),
   terms: z.boolean().refine((val) => val === true, {
     message: 'You must accept the Terms of Use',
   }),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
 });
 
 type StudentFormValues = z.infer<typeof studentSchema>;
@@ -42,13 +37,7 @@ export const StudentForm: React.FC = () => {
     navigate('/onboarding/student-details');
   };
 
-  const qualifications = [
-    { value: '10th', label: '10th Grade' },
-    { value: '12th', label: '12th Grade' },
-    { value: 'ITI', label: 'ITI' },
-    { value: 'Diploma', label: 'Diploma' },
-    { value: 'Graduate', label: 'Graduate' },
-  ];
+
 
   const locations = [
     { value: 'andaman_and_nicobar_islands', label: 'Andaman and Nicobar Islands' },
@@ -124,23 +113,6 @@ export const StudentForm: React.FC = () => {
         placeholder="Create a password"
         {...register('password')}
         error={errors.password?.message}
-      />
-      
-      <FormField
-        label="Confirm Password"
-        type="password"
-        icon={<Lock size={18} />}
-        placeholder="Confirm your password"
-        {...register('confirmPassword')}
-        error={errors.confirmPassword?.message}
-      />
-      
-      <SelectField
-        label="Highest Qualification"
-        icon={<GraduationCap size={18} />}
-        options={qualifications}
-        {...register('qualification')}
-        error={errors.qualification?.message}
       />
       
       <SelectField

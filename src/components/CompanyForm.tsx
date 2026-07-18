@@ -12,15 +12,11 @@ const companySchema = z.object({
   email: z.string().email('Invalid email format'),
   phone: z.string().min(10, 'Phone number must be at least 10 digits'),
   password: z.string().min(6, 'Password must contain at least 6 characters'),
-  confirmPassword: z.string(),
   industry: z.string().min(1, 'Please select an industry'),
   location: z.string().min(1, 'Please select a location'),
   terms: z.boolean().refine((val) => val === true, {
     message: 'You must accept the Terms of Use',
   }),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
 });
 
 type CompanyFormValues = z.infer<typeof companySchema>;
@@ -121,15 +117,6 @@ export const CompanyForm: React.FC = () => {
         placeholder="Create a password"
         {...register('password')}
         error={errors.password?.message}
-      />
-      
-      <FormField
-        label="Confirm Password"
-        type="password"
-        icon={<Lock size={18} />}
-        placeholder="Confirm your password"
-        {...register('confirmPassword')}
-        error={errors.confirmPassword?.message}
       />
       
       <SelectField
