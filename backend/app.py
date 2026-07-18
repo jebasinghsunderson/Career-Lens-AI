@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 from uuid import uuid4
+from resume_parser.parser import parse_resume
 
 from resume_parser.pdf_extractor import extract_text
 from resume_parser.utils import clean_text
@@ -37,13 +38,8 @@ async def upload_resume(file: UploadFile = File(...)):
     text = extract_text(str(file_path))
     text = clean_text(text)
 
-    print("\n" + "=" * 60)
-    print("RESUME EXTRACTED")
-    print("=" * 60)
-    print(text)
-    print("=" * 60 + "\n")
+    parsed_resume = parse_resume(text)
 
-    return {
-        "filename": file.filename,
-        "status": "Resume processed successfully"
-    }
+    print(parsed_resume)
+
+    return parsed_resume
