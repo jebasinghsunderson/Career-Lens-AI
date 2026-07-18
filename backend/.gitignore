@@ -1,13 +1,7 @@
-# Python
+venv/
 __pycache__/
 *.pyc
-
-# Environment
-venv/
 .env
-
-# Uploaded files
-backend/uploads/
-
-# Sample resumes
-backend/sample_resumes/
+pdf_text_test.
+sample_resumes/
+uploads/
