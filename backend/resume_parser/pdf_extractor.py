@@ -1,5 +1,6 @@
 import fitz  # PyMuPDF
 
+
 # input -> resume.. output -> entire extracted text from the resume
 def extract_text(pdf_path: str) -> str:
     """

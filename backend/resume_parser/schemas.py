@@ -12,4 +12,3 @@ class ResumeResponse(BaseModel):
     projects: List[Project] = Field(default_factory=list)
     certifications: List[str] = Field(default_factory=list)
     sector_interest: List[str] = Field(default_factory=list)
-    
