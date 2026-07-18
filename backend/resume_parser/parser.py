@@ -1,4 +1,10 @@
 import re
+from flashtext import KeywordProcessor
+
+skill_processor = KeywordProcessor(case_sensitive=False)
+framework_processor = KeywordProcessor(case_sensitive=False)
+tool_processor = KeywordProcessor(case_sensitive=False)
+role_processor = KeywordProcessor(case_sensitive=False)
 
 SKILLS = {
     "python", "java", "c", "c++", "sql", "javascript",
@@ -31,6 +37,19 @@ ROLES = {
     "ai engineer"
 }
 
+for skill in SKILLS:
+    skill_processor.add_keyword(skill)
+
+for framework in FRAMEWORKS:
+    framework_processor.add_keyword(framework)
+
+for tool in TOOLS:
+    tool_processor.add_keyword(tool)
+
+for role in ROLES:
+    role_processor.add_keyword(role)
+
+
 
 def extract_email(text):
     match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', text)
@@ -50,39 +69,19 @@ def extract_cgpa(text):
 
 
 def extract_skills(text):
-    text_lower = text.lower()
-    return sorted([
-        skill.title()
-        for skill in SKILLS
-        if skill in text_lower
-    ])
+    return sorted(set(skill.title() for skill in skill_processor.extract_keywords(text)))
 
 
 def extract_frameworks(text):
-    text_lower = text.lower()
-    return sorted([
-        framework.title()
-        for framework in FRAMEWORKS
-        if framework in text_lower
-    ])
+    return sorted(set(framework.title() for framework in framework_processor.extract_keywords(text)))
 
 
 def extract_tools(text):
-    text_lower = text.lower()
-    return sorted([
-        tool.title()
-        for tool in TOOLS
-        if tool in text_lower
-    ])
+    return sorted(set(tool.title() for tool in tool_processor.extract_keywords(text)))
 
 
 def extract_roles(text):
-    text_lower = text.lower()
-    return sorted([
-        role.title()
-        for role in ROLES
-        if role in text_lower
-    ])
+    return sorted(set(role.title() for role in role_processor.extract_keywords(text)))
 
 
 def parse_resume(text):
