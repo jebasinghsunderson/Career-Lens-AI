@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CareerLens AI</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .container {
+            width: 400px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        input {
+            margin: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #fileName {
+            margin-top: 15px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <h1>CareerLens AI</h1>
+    <h3>Upload Your Resume</h3>
+
+    <input 
+        type="file"
+        id="resumeFile"
+        accept=".pdf"
+    >
+    <br>
+    <button type="button" onclick="uploadResume()">
+    Analyze Resume
+    </button>
+    <p id="fileName"></p>
+    <pre id="output"></pre>
+
+</div>
+
+<script>
+
+const fileInput = document.getElementById("resumeFile");
+
+fileInput.addEventListener("change", function () {
+    const file = fileInput.files[0];
+
+    if (file) {
+        document.getElementById("fileName").innerText =
+            "Selected: " + file.name;
+    }
+});
+
+async function uploadResume() {
+
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("Please select a PDF first");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+
+        const response = await fetch("http://127.0.0.1:8000/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        console.clear();
+
+        console.log("========== RESUME PARSER ==========");
+        console.log("Filename:", data.filename);
+        console.log("");
+        console.log("Extracted Resume Text:");
+        console.log("----------------------------------");
+        console.log(data.text);
+        console.log("==================================");
+
+    } catch (err) {
+
+        console.error("FETCH ERROR:", err);
+        document.getElementById("output").textContent =
+            err.toString();
+    }
+}
+
+</script>
+
+
+</body>
+
+</html>
