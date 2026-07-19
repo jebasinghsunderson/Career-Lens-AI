@@ -1,11 +1,22 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { UserCircle2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t } = useLanguage();
+
+  // Hide login button on onboarding, suggest, and recommended/profile pages
+  const isHideLogin = [
+    '/onboarding/student-details',
+    '/onboarding/resume',
+    '/onboarding/preferences',
+    '/suggest',
+    '/recommended',
+    '/profile'
+  ].includes(location.pathname);
 
   return (
     <div className="bg-white py-3 px-6 flex justify-between items-center shadow-sm relative z-10">
@@ -36,13 +47,15 @@ export const Header: React.FC = () => {
       </div>
       
       <div className="flex items-center gap-6">
-        <button 
-          onClick={() => navigate('/auth')}
-          className="flex items-center gap-2 bg-[#ff8c00] hover:bg-[#e67e00] text-white px-6 py-2.5 rounded-md font-bold transition-colors shadow-md"
-        >
-          <UserCircle2 size={20} />
-          {t('header.login')}
-        </button>
+        {!isHideLogin && (
+          <button 
+            onClick={() => navigate('/auth')}
+            className="flex items-center gap-2 bg-[#ff8c00] hover:bg-[#e67e00] text-white px-6 py-2.5 rounded-md font-bold transition-colors shadow-md"
+          >
+            <UserCircle2 size={20} />
+            {t('header.login')}
+          </button>
+        )}
         <div className="h-10 border-l border-gray-200"></div>
         <div className="flex flex-col items-end">
           <span className="text-blue-900 font-bold text-sm">{t('header.viksit1')}</span>
