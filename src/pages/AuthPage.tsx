@@ -7,8 +7,10 @@ import { StudentLogin } from '../components/StudentLogin';
 import { CompanyLogin } from '../components/CompanyLogin';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const AuthPage = () => {
+  const { t } = useLanguage();
   const [activeRole, setActiveRole] = useState<'student' | 'company'>('student');
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
@@ -16,7 +18,7 @@ export const AuthPage = () => {
     <AuthLayout>
       <div className="mb-6">
         <Link to="/" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors mb-4">
-          <ArrowLeft size={16} className="mr-1" /> Back to Home
+          <ArrowLeft size={16} className="mr-1" /> {t('auth.backHome')}
         </Link>
       </div>
 
@@ -29,13 +31,13 @@ export const AuthPage = () => {
           onClick={() => setAuthMode('login')}
           className={`flex-1 py-2 text-sm font-bold z-10 transition-colors ${authMode === 'login' ? 'text-blue-900' : 'text-slate-500 hover:text-slate-700'}`}
         >
-          Sign In
+          {t('auth.signIn')}
         </button>
         <button
           onClick={() => setAuthMode('register')}
           className={`flex-1 py-2 text-sm font-bold z-10 transition-colors ${authMode === 'register' ? 'text-blue-900' : 'text-slate-500 hover:text-slate-700'}`}
         >
-          Sign Up
+          {t('auth.signUp')}
         </button>
       </div>
 
@@ -43,12 +45,12 @@ export const AuthPage = () => {
       
       <div className="mb-6">
         <h2 className="text-2xl font-extrabold text-slate-900 mb-2">
-          {authMode === 'login' ? 'Welcome back' : 'Create an account'}
+          {authMode === 'login' ? t('auth.welcomeBack') : t('auth.createAccount')}
         </h2>
         <p className="text-slate-500 text-sm font-medium">
           {authMode === 'login' 
-            ? 'Sign in to access your dashboard.' 
-            : 'Select your role above to get started with CareerLens AI.'}
+            ? t('auth.signInDesc') 
+            : t('auth.signUpDesc')}
         </p>
       </div>
 

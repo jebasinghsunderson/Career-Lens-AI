@@ -4,6 +4,7 @@ import { Header } from '../components/Header';
 import { NavBar } from '../components/NavBar';
 import { Search, ChevronRight, UserCheck, AlertCircle } from 'lucide-react';
 import { Footer } from '../components/Footer';
+import { useLanguage } from '../context/LanguageContext';
 
 // Company list with logo.dev domain + brand color fallback
 const companies: { name: string; domain: string; abbr: string; color: string }[] = [
@@ -68,6 +69,7 @@ const CompanyLogo: React.FC<{ name: string; domain: string; abbr: string; color:
 const Divider = () => <div className="w-px h-9 bg-gray-200 shrink-0 self-center" />;
 
 export const LandingPage: React.FC = () => {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <TopBar />
@@ -85,23 +87,23 @@ export const LandingPage: React.FC = () => {
           <div className="relative z-10 w-full lg:w-[40%] p-8 sm:p-12 lg:pl-16 flex flex-col justify-center">
             <div className="flex flex-col mb-4 relative z-10">
               <h1 className="text-5xl sm:text-6xl font-extrabold text-white leading-[1.1] tracking-tight flex items-center gap-3">
-                Learn
+                {t('landing.learn')}
                 <div className="relative inline-flex items-center justify-center -rotate-6 transform -translate-y-1 ml-1">
                   <div className="absolute inset-0 bg-[#ffcc00] rounded-full translate-y-[3px] translate-x-[1px]"></div>
                   <span className="relative bg-[#ff9900] text-white px-4 py-1 rounded-full text-2xl sm:text-3xl font-bold shadow-sm">
-                    From
+                    {t('landing.from')}
                   </span>
                 </div>
               </h1>
               <h1 className="text-5xl sm:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mt-1 drop-shadow-sm">
-                The <span className="text-[#ffdf00]">Best</span>
+                {t('landing.the')} <span className="text-[#ffdf00]">{t('landing.best')}</span>
               </h1>
             </div>
 
             <hr className="w-full max-w-[220px] border-white/40 my-5" />
 
-            <p className="text-xl sm:text-2xl font-bold text-white mb-2 leading-snug drop-shadow-sm">
-              Paid Internships in Top<br />Companies
+            <p className="text-xl sm:text-2xl font-bold text-white mb-2 leading-snug drop-shadow-sm whitespace-pre-line">
+              {t('landing.paidTop')}
             </p>
           </div>
 
@@ -113,10 +115,8 @@ export const LandingPage: React.FC = () => {
               <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-white shadow-sm"></div>
               <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-white shadow-sm"></div>
 
-              <p className="text-white text-sm leading-relaxed text-center font-medium">
-                A step towards <span className="font-extrabold">empowering</span><br />
-                our youth and building a<br />
-                <span className="font-extrabold">future-ready workforce</span>
+              <p className="text-white text-sm leading-relaxed text-center font-medium whitespace-pre-line">
+                {t('landing.step')}
               </p>
 
               <div className="absolute -bottom-5 -right-4 w-5 h-5 text-white drop-shadow-md transform rotate-12 z-20">
@@ -146,7 +146,7 @@ export const LandingPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-between items-center px-5 py-3 border-b border-gray-100">
             <div className="flex items-center gap-2 text-[#103058] font-bold text-sm">
               <span className="w-[16px] h-[16px] rounded-full border-2 border-[#103058] flex items-center justify-center text-[10px] font-extrabold">i</span>
-              Paid internships in top companies
+              {t('landing.paidTopRow')}
             </div>
             <div className="relative mt-3 sm:mt-0 w-full sm:w-56">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -154,7 +154,7 @@ export const LandingPage: React.FC = () => {
               </div>
               <input
                 type="text"
-                placeholder="Search company"
+                placeholder={t('landing.searchComp')}
                 className="w-full pl-9 pr-4 py-1.5 border border-gray-300 rounded-full text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 shadow-sm"
               />
             </div>
@@ -193,12 +193,11 @@ export const LandingPage: React.FC = () => {
         {/* Secondary Banner area */}
         <div className="w-full max-w-7xl mx-auto mt-6 rounded-3xl overflow-hidden relative bg-gradient-to-r from-[#2e1065] via-[#4c1d95] to-[#ea580c] shadow-xl py-6 px-10 flex flex-col lg:flex-row items-center justify-between gap-6">
           <div className="flex flex-col gap-4 relative z-10">
-            <h2 className="text-4xl font-extrabold text-white leading-tight">
-              Submit your<br />Application <span className="text-[#ffdf00]">With Ease !</span>
+            <h2 className="text-4xl font-extrabold text-white leading-tight whitespace-pre-line">
+              {t('landing.submit')} <span className="text-[#ffdf00]">{t('landing.withEase')}</span>
             </h2>
-            <div className="bg-[#ffcc00] rounded-xl px-4 py-2 border-2 border-white text-[#854d0e] font-bold text-[13px] max-w-xl shadow-md">
-              Financial assistance: Min. ₹9000/month | Internship duration - 6 / 9 months<br />
-              | Youth between 18-25 can apply
+            <div className="bg-[#ffcc00] rounded-xl px-4 py-2 border-2 border-white text-[#854d0e] font-bold text-[13px] max-w-xl shadow-md whitespace-pre-line">
+              {t('landing.financeAssistance')}
             </div>
           </div>
 
@@ -206,9 +205,9 @@ export const LandingPage: React.FC = () => {
             <div className="flex flex-col items-center gap-2 max-w-[120px]">
               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-purple-900 border-[6px] border-[#ffcc00] shadow-lg relative">
                 <Search size={28} />
-                <div className="absolute -top-3 bg-white text-[10px] px-2 py-0.5 border border-gray-200 rounded-full font-bold text-gray-500 tracking-wider">SEARCH</div>
+                <div className="absolute -top-3 bg-white text-[10px] px-2 py-0.5 border border-gray-200 rounded-full font-bold text-gray-500 tracking-wider">{t('landing.search')}</div>
               </div>
-              <span>Apply for up to<br />3 internships</span>
+              <span className="whitespace-pre-line">{t('landing.applyUpTo')}</span>
             </div>
 
             <ChevronRight size={32} className="text-[#ffdf00] shrink-0" />
@@ -222,7 +221,7 @@ export const LandingPage: React.FC = () => {
                   <div className="w-3 h-1 bg-rose-500 rounded-sm"></div>
                 </div>
               </div>
-              <span>Compare internships<br />before applying</span>
+              <span className="whitespace-pre-line">{t('landing.compare')}</span>
             </div>
 
             <ChevronRight size={32} className="text-[#ffdf00] shrink-0" />
@@ -232,7 +231,7 @@ export const LandingPage: React.FC = () => {
                 <div className="w-8 h-2 bg-gray-200 rounded-sm mb-1"></div>
                 <AlertCircle size={24} />
               </div>
-              <span>Read disclaimers<br />carefully</span>
+              <span className="whitespace-pre-line">{t('landing.read')}</span>
             </div>
           </div>
 

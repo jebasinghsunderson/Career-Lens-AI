@@ -10,22 +10,35 @@ import RecommendedCompaniesPage from './pages/RecommendedCompaniesPage';
 import { LanguageProvider } from './context/LanguageContext';
 import { LanguageModal } from './components/LanguageModal';
 
+import { useLanguage } from './context/LanguageContext';
+
+const AppContent = () => {
+  const { language } = useLanguage();
+
+  if (language === null) {
+    return <LanguageModal />;
+  }
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/suggest" element={<SuggestPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/onboarding/student-details" element={<StudentDetailsPage />} />
+        <Route path="/onboarding/preferences" element={<InternshipPreferencesPage />} />
+        <Route path="/onboarding/resume" element={<ResumeUploadPage />} />
+        <Route path="/recommended" element={<RecommendedCompaniesPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
 function App() {
   return (
     <LanguageProvider>
-      <LanguageModal />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="/suggest" element={<SuggestPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/onboarding/student-details" element={<StudentDetailsPage />} />
-          <Route path="/onboarding/preferences" element={<InternshipPreferencesPage />} />
-          <Route path="/onboarding/resume" element={<ResumeUploadPage />} />
-          <Route path="/recommended" element={<RecommendedCompaniesPage />} />
-        </Routes>
-      </BrowserRouter>
+      <AppContent />
     </LanguageProvider>
   );
 }

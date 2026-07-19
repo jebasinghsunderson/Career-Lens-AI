@@ -1,22 +1,24 @@
 import React from 'react';
 import { Home, FileText, HelpCircle, BookOpen, PlayCircle, Image, Star, Book, Smartphone, Headset, Lightbulb } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 export const NavBar: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const navItems = [
-    { name: 'HOME', icon: <Home size={16} />, path: '/' },
-    { name: 'SUGGEST ME', icon: <Lightbulb size={16} />, path: '/suggest' },
-    { name: 'GUIDELINES', icon: <FileText size={16} />, path: '#' },
-    { name: 'FAQS', icon: <HelpCircle size={16} />, path: '#' },
-    { name: 'MANUALS', icon: <BookOpen size={16} />, path: '#' },
-    { name: 'GUIDANCE VIDEOS', icon: <PlayCircle size={16} />, path: '#' },
-    { name: 'GALLERY', icon: <Image size={16} />, path: '#' },
-    { name: 'BENEFITS', icon: <Star size={16} />, path: '#' },
-    { name: 'COMPENDIUM', icon: <Book size={16} />, path: '#' },
-    { name: 'MOBILE APP', icon: <Smartphone size={16} />, path: '#' },
-    { name: 'SUPPORT', icon: <Headset size={16} />, path: '#' },
+    { name: t('nav.home'), icon: <Home size={16} />, path: '/' },
+    { name: t('nav.suggestMe'), icon: <Lightbulb size={16} />, path: '/suggest' },
+    { name: t('nav.guidelines'), icon: <FileText size={16} />, path: '#' },
+    { name: t('nav.faqs'), icon: <HelpCircle size={16} />, path: '#' },
+    { name: t('nav.manuals'), icon: <BookOpen size={16} />, path: '#' },
+    { name: t('nav.videos'), icon: <PlayCircle size={16} />, path: '#' },
+    { name: t('nav.gallery'), icon: <Image size={16} />, path: '#' },
+    { name: t('nav.benefits'), icon: <Star size={16} />, path: '#' },
+    { name: t('nav.compendium'), icon: <Book size={16} />, path: '#' },
+    { name: t('nav.mobileApp'), icon: <Smartphone size={16} />, path: '#' },
+    { name: t('nav.support'), icon: <Headset size={16} />, path: '#' },
   ];
 
   return (

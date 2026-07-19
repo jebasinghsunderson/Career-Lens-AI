@@ -6,6 +6,7 @@ import { Briefcase, Mail, Phone, Lock, MapPin, Building } from 'lucide-react';
 import { FormField } from './FormField';
 import { SelectField } from './SelectField';
 import { Button } from './Button';
+import { useLanguage } from '../context/LanguageContext';
 
 const companySchema = z.object({
   companyName: z.string().min(2, 'Company name must contain at least 2 characters'),
@@ -22,6 +23,7 @@ const companySchema = z.object({
 type CompanyFormValues = z.infer<typeof companySchema>;
 
 export const CompanyForm: React.FC = () => {
+  const { t } = useLanguage();
   const {
     register,
     handleSubmit,
@@ -85,42 +87,42 @@ export const CompanyForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <FormField
-        label="Company Name"
+        label={t('form.companyName')}
         icon={<Briefcase size={18} />}
-        placeholder="Enter company name"
+        placeholder={t('form.companyNamePlace')}
         {...register('companyName')}
         error={errors.companyName?.message}
       />
       
       <FormField
-        label="Official Email"
+        label={t('form.offEmail')}
         type="email"
         icon={<Mail size={18} />}
-        placeholder="Enter official email"
+        placeholder={t('form.offEmailPlace')}
         {...register('email')}
         error={errors.email?.message}
       />
       
       <FormField
-        label="Phone Number"
+        label={t('form.phone')}
         type="tel"
         icon={<Phone size={18} />}
-        placeholder="Enter phone number"
+        placeholder={t('form.phonePlace')}
         {...register('phone')}
         error={errors.phone?.message}
       />
       
       <FormField
-        label="Password"
+        label={t('form.password')}
         type="password"
         icon={<Lock size={18} />}
-        placeholder="Create a password"
+        placeholder={t('form.passCreate')}
         {...register('password')}
         error={errors.password?.message}
       />
       
       <SelectField
-        label="Industry/Sector"
+        label={t('form.industry')}
         icon={<Building size={18} />}
         options={industries}
         {...register('industry')}
@@ -128,7 +130,7 @@ export const CompanyForm: React.FC = () => {
       />
       
       <SelectField
-        label="Company Location"
+        label={t('form.companyLoc')}
         icon={<MapPin size={18} />}
         options={locations}
         {...register('location')}
@@ -146,14 +148,14 @@ export const CompanyForm: React.FC = () => {
         </div>
         <div className="text-sm">
           <label htmlFor="terms-company" className="font-medium text-gray-700">
-            I agree to the <a href="#" className="text-blue-600 hover:underline">Terms of Use</a>
+            {t('form.iAgree')} <a href="#" className="text-blue-600 hover:underline">{t('form.terms')}</a>
           </label>
           {errors.terms && <p className="text-xs text-red-500 mt-1">{errors.terms.message}</p>}
         </div>
       </div>
       
       <Button type="submit" className="mt-2">
-        Sign Up as Company
+        {t('form.signUpCompany')}
       </Button>
     </form>
   );

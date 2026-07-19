@@ -1,9 +1,10 @@
 import React from 'react';
 import { Globe } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { LANGUAGES } from '../i18n/languages';
 
 export const TopBar: React.FC = () => {
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
 
   return (
     <div className="bg-[#1a1a1a] text-white text-xs py-1 px-4 flex justify-between items-center border-b border-gray-700">
@@ -13,7 +14,7 @@ export const TopBar: React.FC = () => {
           alt="India Flag" 
           className="w-4 h-3"
         />
-        <span className="font-medium tracking-wide">भारत सरकार / Government of India</span>
+        <span className="font-medium tracking-wide">{t('topbar.gov')}</span>
       </div>
       <div className="flex items-center gap-4 divide-x divide-gray-600">
         <div className="px-4 flex gap-2">
@@ -28,8 +29,11 @@ export const TopBar: React.FC = () => {
               value={language || 'English'}
               onChange={(e) => setLanguage(e.target.value as any)}
             >
-              <option value="English" className="text-black">English</option>
-              <option value="Hindi" className="text-black">हिन्दी</option>
+              {LANGUAGES.map(lang => (
+                <option key={lang} value={lang} className="text-black">
+                  {lang}
+                </option>
+              ))}
             </select>
             <div className="absolute right-2 pointer-events-none">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg>

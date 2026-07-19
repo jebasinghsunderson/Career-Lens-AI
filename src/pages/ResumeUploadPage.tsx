@@ -3,17 +3,14 @@ import React, { useState, useRef, useCallback, useEffect, useMemo } from "react"
 import { useNavigate } from "react-router-dom";
 
 // ============================================================
-// Label map
+// Label map (content unchanged)
 // ============================================================
 const LABELS = {
   stepIndicator: "Step 2 of 2",
   stepName: "Resume & Preferences",
-
   pageTitle: "Upload Resume & Set Preferences",
-  pageSubtitle:
-    "Upload your resume and tell us your internship preferences so we can recommend the best opportunities for you.",
+  pageSubtitle: "Upload your resume and tell us your internship preferences so we can recommend the best opportunities for you.",
 
-  // ---- Upload ----
   uploadCardHeading: "Upload Resume",
   uploadHeading: "Drag and drop your resume here",
   uploadOr: "OR",
@@ -32,9 +29,6 @@ const LABELS = {
   errorInvalidType: "Please upload a PDF file.",
   errorTooLarge: "File is larger than 5 MB. Please choose a smaller file.",
 
-
-
-  // ---- Preferences ----
   prefTitle: "Internship Preferences",
   prefSubtitle: "Tell us your preferences so we can match you with the right opportunities.",
 
@@ -63,18 +57,17 @@ const LABELS = {
 
   summaryTitle: "Selected Preferences",
   summaryPreferredLocation: "Preferred Location",
-  summaryAlternateLocation: "Alternate Preferred Location",
+  summaryAlternateLocation: "Alternate Location",
   summaryPriorityRole: "Priority Role",
   summarySecondaryRole: "Secondary Role",
   summaryNotSelected: "Not selected yet",
 
-  // ---- Actions ----
   btnPrevious: "Previous",
   btnFindInternships: "Find My Internships",
 };
 
 // ============================================================
-// Data
+// Data (unchanged)
 // ============================================================
 const INDIAN_STATES = [
   "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
@@ -118,7 +111,6 @@ const FIELDS_OPTIONS = [
 ];
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
-const PROGRESS_PERCENT = 100;
 
 // ============================================================
 // Helpers
@@ -130,167 +122,13 @@ function formatFileSize(bytes) {
 }
 
 // ============================================================
-// Icons
+// Searchable Select (logic unchanged, styled fresh)
 // ============================================================
-function PdfIcon({ size = 48 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" aria-hidden="true">
-      <path d="M12 4h16l8 8v28a2 2 0 0 1-2 2H12a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" stroke="#0F6CBD" strokeWidth="2" fill="#EAF2FA" />
-      <path d="M28 4v8h8" stroke="#0F6CBD" strokeWidth="2" fill="none" />
-      <text x="24" y="30" textAnchor="middle" fontSize="10" fontWeight="700" fill="#0F6CBD">PDF</text>
-    </svg>
-  );
-}
-
-function InfoIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true" className="gds-info-icon">
-      <circle cx="10" cy="10" r="9" stroke="#0F6CBD" strokeWidth="1.5" />
-      <rect x="9.1" y="8.5" width="1.8" height="5.5" rx="0.5" fill="#0F6CBD" />
-      <rect x="9.1" y="5.5" width="1.8" height="1.8" rx="0.5" fill="#0F6CBD" />
-    </svg>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-      <rect x="3.5" y="8" width="11" height="7.5" rx="1.5" stroke="#0F6CBD" strokeWidth="1.4" />
-      <path d="M5.5 8V5.5a3.5 3.5 0 0 1 7 0V8" stroke="#0F6CBD" strokeWidth="1.4" fill="none" />
-      <circle cx="9" cy="11.6" r="1.1" fill="#0F6CBD" />
-    </svg>
-  );
-}
-
-function CheckCircleIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-      <circle cx="11" cy="11" r="10" fill="#1E7A34" stroke="#1E7A34" strokeWidth="1.5" />
-      <path d="M6.5 11.2L9.3 14L15.5 7.5" stroke="#fff" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function ChevronDownIcon() {
-  return (
-    <svg width="14" height="9" viewBox="0 0 14 9" fill="none" aria-hidden="true">
-      <path d="M1 1.5L7 7.5L13 1.5" stroke="#5B6470" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function SearchIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <circle cx="7" cy="7" r="5.2" stroke="#5B6470" strokeWidth="1.6" fill="none" />
-      <path d="M11 11L14.5 14.5" stroke="#5B6470" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path d="M2.5 7.2L5.5 10.2L11.5 3.8" stroke="#0F6CBD" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-// ============================================================
-// Progress Bar
-// ============================================================
-function OnboardingProgressBar({ percent, stepIndicator, stepName }) {
-  const [animatedPercent, setAnimatedPercent] = useState(0);
-  useEffect(() => {
-    const raf = requestAnimationFrame(() => setAnimatedPercent(percent));
-    return () => cancelAnimationFrame(raf);
-  }, [percent]);
-
-  return (
-    <div className="gds-progress-block">
-      <div className="gds-progress-heading-row">
-        <span className="gds-step-label">{stepIndicator}</span>
-        <span className="gds-step-percent">{percent}%</span>
-      </div>
-      <p className="gds-step-name">{stepName}</p>
-      <div className="gds-progress-track" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>
-        <div className="gds-progress-fill" style={{ width: `${animatedPercent}%` }} />
-      </div>
-    </div>
-  );
-}
-
-// ============================================================
-// Upload Card
-// ============================================================
-function UploadCard({ file, error, isDragOver, onBrowseClick, onFileChange, onRemove, onReplaceClick, dragHandlers, inputRef }) {
-  if (file) {
-    return (
-      <div className="gds-file-summary" role="status">
-        <div className="gds-file-summary-left">
-          <PdfIcon size={40} />
-          <div>
-            <p className="gds-file-name">{file.name}</p>
-            <p className="gds-file-meta">{formatFileSize(file.size)}</p>
-            <span className="gds-file-status-badge"><CheckCircleIcon />{LABELS.fileSelectedStatus}</span>
-          </div>
-        </div>
-        <div className="gds-file-summary-actions">
-          <button type="button" className="gds-btn gds-btn-outline gds-btn-sm" onClick={onReplaceClick}>{LABELS.actionReplace}</button>
-          <button type="button" className="gds-btn gds-btn-text gds-btn-sm" onClick={onRemove}>{LABELS.actionRemove}</button>
-        </div>
-        <input ref={inputRef} type="file" accept="application/pdf" className="gds-visually-hidden" onChange={onFileChange} aria-hidden="true" tabIndex={-1} />
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <h2 className="gds-upload-card-heading">{LABELS.uploadCardHeading}</h2>
-      <div
-        className={`gds-dropzone${isDragOver ? " gds-dropzone-dragover" : ""}${error ? " gds-dropzone-error" : ""}`}
-        role="button" tabIndex={0}
-        aria-label="Upload your resume. Drag and drop a PDF file here, or activate to browse files."
-        onClick={onBrowseClick}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onBrowseClick(); } }}
-        {...dragHandlers}
-      >
-        <PdfIcon size={56} />
-        <p className="gds-dropzone-heading">{LABELS.uploadHeading}</p>
-        <p className="gds-dropzone-or">{LABELS.uploadOr}</p>
-        <button type="button" className="gds-btn gds-btn-primary gds-btn-sm" onClick={(e) => { e.stopPropagation(); onBrowseClick(); }}>
-          {LABELS.uploadBrowseBtn}
-        </button>
-        <input ref={inputRef} type="file" accept="application/pdf" className="gds-visually-hidden" onChange={onFileChange} aria-hidden="true" tabIndex={-1} />
-      </div>
-      {error && <p className="gds-error" role="alert">{error}</p>}
-      <div className="gds-upload-meta">
-        <div className="gds-upload-meta-item">
-          <span className="gds-upload-meta-label">{LABELS.uploadFormatLabel}</span>
-          <span className="gds-upload-meta-value">{LABELS.uploadFormatValue}</span>
-        </div>
-        <div className="gds-upload-meta-item">
-          <span className="gds-upload-meta-label">{LABELS.uploadSizeLabel}</span>
-          <span className="gds-upload-meta-value">{LABELS.uploadSizeValue}</span>
-        </div>
-        <div className="gds-upload-meta-item">
-          <span className="gds-upload-meta-label">{LABELS.uploadAcceptedLabel}</span>
-          <span className="gds-upload-meta-value">{LABELS.uploadAcceptedValue}</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ============================================================
-// Searchable Select (combobox)
-// ============================================================
-function SearchableSelect({ id, label, value, onChange, onBlurValidate, options, placeholder, error }) {
+function SearchableSelect({ id, label, value, onChange, onBlurValidate, options, placeholder, error, required = true }) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState(value || "");
   const [activeIndex, setActiveIndex] = useState(-1);
   const wrapperRef = useRef(null);
-  const listboxId = `${id}-listbox`;
 
   useEffect(() => { setQuery(value || ""); }, [value]);
 
@@ -303,8 +141,7 @@ function SearchableSelect({ id, label, value, onChange, onBlurValidate, options,
   useEffect(() => {
     function handleClickOutside(e) {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
-        setIsOpen(false);
-        setQuery(value || "");
+        setIsOpen(false); setQuery(value || "");
         if (onBlurValidate) onBlurValidate();
       }
     }
@@ -325,64 +162,49 @@ function SearchableSelect({ id, label, value, onChange, onBlurValidate, options,
   };
 
   return (
-    <div className="gds-combobox" ref={wrapperRef}>
-      <label htmlFor={id} className="gds-label">
-        <span>{label}</span><span className="gds-required" aria-hidden="true">*</span>
+    <div className="ru-combobox" ref={wrapperRef}>
+      <label htmlFor={id} className="ru-label">
+        <span>{label}</span>
+        {required && <span className="ru-required" aria-hidden="true">*</span>}
       </label>
-      <div className={`gds-combobox-control${error ? " gds-input-error" : ""}`}>
-        <SearchIcon />
+      <div className={`ru-combobox-control${error ? " ru-input-error" : ""}${isOpen ? " ru-combobox-open" : ""}`}>
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true" style={{flexShrink:0, opacity:0.4}}>
+          <circle cx="7" cy="7" r="5.2" stroke="#e8edf5" strokeWidth="1.6" fill="none"/>
+          <path d="M11 11L14.5 14.5" stroke="#e8edf5" strokeWidth="1.6" strokeLinecap="round"/>
+        </svg>
         <input
           id={id} type="text" role="combobox"
-          aria-expanded={isOpen} aria-controls={listboxId} aria-autocomplete="list" aria-invalid={!!error}
-          className="gds-combobox-input" placeholder={placeholder} value={query}
+          aria-expanded={isOpen} aria-autocomplete="list" aria-invalid={!!error}
+          className="ru-combobox-input" placeholder={placeholder} value={query}
           onChange={(e) => { setQuery(e.target.value); setIsOpen(true); setActiveIndex(-1); }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
         />
-        <span className="gds-combobox-chevron"><ChevronDownIcon /></span>
+        <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true" style={{flexShrink:0, opacity:0.4, transition:'transform 0.2s', transform: isOpen ? 'rotate(180deg)' : 'rotate(0)'}}>
+          <path d="M1 1L6 6L11 1" stroke="#e8edf5" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
       </div>
       {isOpen && (
-        <ul className="gds-combobox-listbox" role="listbox" id={listboxId}>
+        <ul className="ru-combobox-listbox" role="listbox">
           {filteredOptions.length === 0 ? (
-            <li className="gds-combobox-empty">{LABELS.noResults}</li>
+            <li className="ru-combobox-empty">{LABELS.noResults}</li>
           ) : (
             filteredOptions.map((opt, idx) => (
               <li key={opt} role="option" aria-selected={opt === value}
-                className={`gds-combobox-option${idx === activeIndex ? " gds-combobox-option-active" : ""}${opt === value ? " gds-combobox-option-selected" : ""}`}
+                className={`ru-combobox-option${idx === activeIndex ? " ru-combobox-active" : ""}${opt === value ? " ru-combobox-selected" : ""}`}
                 onMouseDown={(e) => { e.preventDefault(); selectOption(opt); }}
                 onMouseEnter={() => setActiveIndex(idx)}
               >
-                <span>{opt}</span>{opt === value && <CheckIcon />}
+                <span>{opt}</span>
+                {opt === value && (
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7.2L5.5 10.2L11.5 3.8" stroke="#6366f1" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                )}
               </li>
             ))
           )}
         </ul>
       )}
-      {error && <p className="gds-error" role="alert">{error}</p>}
-    </div>
-  );
-}
-
-// ============================================================
-// Preferences Summary Card
-// ============================================================
-function SummaryRow({ label, value }) {
-  return (
-    <div className="gds-summary-row">
-      <span className="gds-summary-label">{label}</span>
-      <span className={`gds-summary-value${value ? "" : " gds-summary-value-empty"}`}>{value || LABELS.summaryNotSelected}</span>
-    </div>
-  );
-}
-
-function PreferencesSummary({ preferredLocation, alternateLocation, priorityRole, secondaryRole }) {
-  return (
-    <div className="gds-summary-card" aria-live="polite">
-      <h2 className="gds-summary-title">{LABELS.summaryTitle}</h2>
-      <SummaryRow label={LABELS.summaryPreferredLocation} value={preferredLocation} />
-      <SummaryRow label={LABELS.summaryAlternateLocation} value={alternateLocation} />
-      <SummaryRow label={LABELS.summaryPriorityRole} value={priorityRole} />
-      <SummaryRow label={LABELS.summarySecondaryRole} value={secondaryRole} />
+      {error && <p className="ru-error" role="alert">{error}</p>}
     </div>
   );
 }
@@ -390,17 +212,23 @@ function PreferencesSummary({ preferredLocation, alternateLocation, priorityRole
 // ============================================================
 // Main Page Component
 // ============================================================
+import { uploadResume } from "../services/resumeApi";
+import type { ResumeParseResponse } from "../services/resumeApi";
+
 export default function ResumeUploadPage() {
   const navigate = useNavigate();
 
-  // ---- Upload state ----
   const [file, setFile] = useState(null);
   const [fileError, setFileError] = useState("");
   const [isDragOver, setIsDragOver] = useState(false);
   const dragCounter = useRef(0);
   const inputRef = useRef(null);
 
-  // ---- Preferences state ----
+  // Parsing & service states
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const [parsedResumeData, setParsedResumeData] = useState<ResumeParseResponse | null>(null);
+
   const [preferredLocation, setPreferredLocation] = useState("");
   const [alternateLocation, setAlternateLocation] = useState("");
   const [priorityRole, setPriorityRole] = useState("");
@@ -415,311 +243,799 @@ export default function ResumeUploadPage() {
     ? LABELS.roleDuplicateError : "";
 
   const isPrefsComplete = !!preferredLocation && !!alternateLocation && !!priorityRole && !!secondaryRole
-    && !!sector && !!fields
-    && preferredLocation !== alternateLocation && priorityRole !== secondaryRole;
+    && !!sector && !!fields && preferredLocation !== alternateLocation && priorityRole !== secondaryRole;
 
+  // The form is complete either when parsed resume data exists or a file is loaded, combined with valid preferences.
+  // A file is required to proceed, but if parsing fails, they can still proceed manually as long as a file is selected.
   const isFormComplete = !!file && isPrefsComplete;
 
-  // ---- File handlers ----
-  const validateAndSetFile = useCallback((candidate) => {
+  const validateAndSetFile = useCallback(async (candidate) => {
     if (!candidate) return;
-    if (candidate.type !== "application/pdf") { setFileError(LABELS.errorInvalidType); setFile(null); return; }
-    if (candidate.size > MAX_FILE_SIZE_BYTES) { setFileError(LABELS.errorTooLarge); setFile(null); return; }
-    setFileError(""); setFile(candidate);
+    const extension = candidate.name.split('.').pop()?.toLowerCase();
+    if (extension !== "pdf" && extension !== "docx") {
+      setFileError("Please upload a PDF or DOCX file.");
+      setFile(null);
+      return;
+    }
+    if (candidate.size > MAX_FILE_SIZE_BYTES) {
+      setFileError(LABELS.errorTooLarge);
+      setFile(null);
+      return;
+    }
+    setFileError("");
+    setFile(candidate);
+    setUploadError("");
+    setParsedResumeData(null);
+
+    // Call Render backend resume API parser
+    setIsUploading(true);
+    try {
+      const data = await uploadResume(candidate);
+      setParsedResumeData(data);
+    } catch (err) {
+      console.error(err);
+      setUploadError("Couldn't process your resume. Please check the file and try again, or fill your details manually.");
+    } finally {
+      setIsUploading(false);
+    }
   }, []);
 
-  const handleFileChange = (e) => { const c = e.target.files?.[0]; validateAndSetFile(c); e.target.value = ""; };
+  const handleFileChange = (e) => { validateAndSetFile(e.target.files?.[0]); e.target.value = ""; };
   const handleBrowseClick = () => inputRef.current?.click();
-  const handleRemove = () => { setFile(null); setFileError(""); };
+  const handleRemove = () => {
+    setFile(null);
+    setFileError("");
+    setUploadError("");
+    setParsedResumeData(null);
+  };
 
   const handleDragEnter = (e) => { e.preventDefault(); dragCounter.current += 1; setIsDragOver(true); };
   const handleDragLeave = (e) => { e.preventDefault(); dragCounter.current -= 1; if (dragCounter.current <= 0) { setIsDragOver(false); dragCounter.current = 0; } };
   const handleDragOver = (e) => e.preventDefault();
   const handleDrop = (e) => { e.preventDefault(); dragCounter.current = 0; setIsDragOver(false); validateAndSetFile(e.dataTransfer.files?.[0]); };
-
   const dragHandlers = { onDragEnter: handleDragEnter, onDragLeave: handleDragLeave, onDragOver: handleDragOver, onDrop: handleDrop };
 
   const handleSubmit = () => {
     if (!isFormComplete) return;
-    console.log("Submitting:", { file, preferredLocation, alternateLocation, priorityRole, secondaryRole, sector, fields });
+
+    // Combine parsed data (skills, frameworks, tools) into a single skills array before submission
+    // Note: parsedResumeData might be null if upload failed or was skipped
+    const skillsList = parsedResumeData ? [
+      ...(parsedResumeData.skills || []),
+      ...(parsedResumeData.frameworks || []),
+      ...(parsedResumeData.tools || [])
+    ] : [];
+
+    // TODO: The backend's skill/role keyword matching (parser.py) currently only recognizes a small, tech-focused vocabulary
+    // (Python, React, FastAPI, etc.) — non-technical skills (Excel, Communication, Sales, etc.) won't be detected yet.
+    // Keep this limitation in mind when non-tech internship categories are added.
+
+    console.log("Submitting:", {
+      file,
+      preferredLocation,
+      alternateLocation,
+      priorityRole,
+      secondaryRole,
+      sector,
+      fields,
+      parsedSkills: skillsList,
+      parsedName: parsedResumeData?.name || "",
+      parsedEmail: parsedResumeData?.email || "",
+      parsedPhone: parsedResumeData?.phone || "",
+      parsedCgpa: parsedResumeData?.cgpa || null
+    });
+
     navigate('/recommended');
   };
 
+  // Count filled prefs for mini-progress
+  const filledPrefs = [preferredLocation, alternateLocation, priorityRole, secondaryRole, sector, fields].filter(Boolean).length;
+  const prefsProgress = Math.round((filledPrefs / 6) * 100);
+
   return (
-    <div className="gds-page">
+    <div className="ru-page">
       <style>{`
-        :root {
-          --gds-blue: #0F6CBD;
-          --gds-blue-dark: #0B4F8F;
-          --gds-border: #D1D5DB;
-          --gds-text: #1A1A1A;
-          --gds-text-muted: #5B6470;
-          --gds-bg: #FFFFFF;
-          --gds-bg-subtle: #F7F9FB;
-          --gds-error: #B3261E;
-          --gds-success: #1E7A34;
-          --gds-radius: 6px;
-        }
-        * { box-sizing: border-box; }
-        .gds-page {
-          background: var(--gds-bg);
-          color: var(--gds-text);
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        .ru-page {
+          font-family: 'Inter', sans-serif;
           min-height: 100vh;
-          padding: 0 0 96px 0;
+          background-color: #f8fafc;
+          color: #0f172a;
+          padding-bottom: 60px;
         }
-        .gds-container { max-width: 1200px; margin: 0 auto; padding: 24px 24px; }
 
-        /* Progress */
-        .gds-progress-block { margin-bottom: 24px; }
-        .gds-progress-heading-row { display: flex; align-items: baseline; justify-content: space-between; }
-        .gds-step-label { font-size: 14px; font-weight: 700; color: var(--gds-blue-dark); letter-spacing: 0.02em; text-transform: uppercase; }
-        .gds-step-percent { font-size: 13px; font-weight: 600; color: var(--gds-text-muted); }
-        .gds-step-name { font-size: 13px; color: var(--gds-text-muted); margin: 2px 0 10px 0; }
-        .gds-progress-track { height: 8px; background: #E5E7EB; border-radius: 999px; overflow: hidden; }
-        .gds-progress-fill { height: 100%; background: var(--gds-blue); border-radius: 999px; transition: width 0.7s ease; }
+        .ru-wrapper {
+          max-width: 1160px;
+          margin: 0 auto;
+          padding: 30px 24px;
+        }
 
-        /* Header */
-        .gds-page-title { font-size: 28px; line-height: 1.25; font-weight: 700; margin: 0 0 8px 0; color: var(--gds-text); }
-        .gds-page-subtitle { font-size: 16px; line-height: 1.5; color: var(--gds-text-muted); margin: 0 0 28px 0; max-width: 62ch; }
+        /* ---- Official Header block ---- */
+        .ru-hero {
+          background-color: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-top: 4px solid #1e3a8a;
+          border-radius: 8px;
+          padding: 24px 30px;
+          margin-bottom: 24px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .ru-step-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background-color: #eff6ff;
+          border: 1px solid #bfdbfe;
+          border-radius: 4px;
+          padding: 3px 10px;
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          color: #1e40af;
+          margin-bottom: 10px;
+        }
+        .ru-step-dot {
+          width: 6px; height: 6px;
+          border-radius: 50%;
+          background-color: #2563eb;
+        }
+        .ru-hero-title {
+          font-size: 24px;
+          font-weight: 700;
+          color: #1e3a8a;
+          margin: 0 0 6px 0;
+        }
+        .ru-hero-sub {
+          font-size: 14px;
+          color: #475569;
+          margin: 0;
+          line-height: 1.5;
+        }
 
-        /* Section */
-        .gds-section { border: 1px solid var(--gds-border); border-radius: var(--gds-radius); padding: 20px; margin-bottom: 20px; background: var(--gds-bg); }
-        .gds-section-title { font-size: 18px; font-weight: 700; margin: 0 0 4px 0; padding-bottom: 12px; border-bottom: 1px solid var(--gds-border); }
-        .gds-section-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; padding-top: 16px; }
-        @media (max-width: 640px) { .gds-section-grid { grid-template-columns: 1fr; } }
-
-        /* Two-column layout */
-        .gds-two-col {
+        /* ---- Two-column main layout ---- */
+        .ru-layout {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 24px;
           align-items: start;
         }
-        .gds-col-panel {
-          display: flex;
-          flex-direction: column;
-          gap: 0;
+        @media (max-width: 860px) { .ru-layout { grid-template-columns: 1fr; } }
+
+        /* ---- Official Section Card ---- */
+        .ru-card {
+          background-color: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
+          padding: 24px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-        .gds-panel-heading {
-          font-size: 15px;
+        .ru-card-title {
+          font-size: 13px;
           font-weight: 700;
-          color: var(--gds-text);
-          margin: 0 0 14px 0;
-          padding-bottom: 10px;
-          border-bottom: 2px solid var(--gds-blue);
-          display: inline-block;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: #1e3a8a;
+          margin: 0 0 16px 0;
+          display: flex; align-items: center; gap: 8px;
         }
-        @media (max-width: 860px) {
-          .gds-two-col { grid-template-columns: 1fr; }
+        .ru-card-title::after {
+          content: ''; flex: 1; height: 1px;
+          background-color: #e2e8f0;
         }
-
-        /* Divider between upload and preferences */
-        .gds-section-divider {
-          display: flex; align-items: center; gap: 12px;
-          margin: 28px 0;
-          color: var(--gds-text-muted); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+        .ru-section-heading {
+          font-size: 12px; font-weight: 700;
+          text-transform: uppercase;
+          color: #1e3a8a;
+          margin: 20px 0 14px 0;
+          padding-bottom: 8px;
+          border-bottom: 1px solid #e2e8f0;
         }
-        .gds-section-divider::before, .gds-section-divider::after {
-          content: ''; flex: 1; height: 1px; background: var(--gds-border);
+        .ru-section-heading:first-of-type { margin-top: 0; }
+
+        /* ---- Drop Zone ---- */
+        .ru-dropzone {
+          border: 2px dashed #cbd5e1;
+          border-radius: 8px;
+          background-color: #f8fafc;
+          padding: 40px 20px;
+          display: flex; flex-direction: column;
+          align-items: center; justify-content: center;
+          text-align: center; cursor: pointer;
+          transition: all 0.15s ease;
         }
-
-        /* Upload */
-        .gds-upload-card-heading { font-size: 18px; font-weight: 700; margin: 0 0 16px 0; color: var(--gds-text); }
-        .gds-dropzone {
-          border: 2px dashed var(--gds-border); border-radius: var(--gds-radius); background: var(--gds-bg);
-          padding: 40px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-          text-align: center; cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease;
+        .ru-dropzone:hover, .ru-dropzone-over {
+          border-color: #2563eb;
+          background-color: #eff6ff;
         }
-        .gds-dropzone:hover { background: var(--gds-bg-subtle); border-color: var(--gds-blue); }
-        .gds-dropzone:focus-visible { outline: 3px solid rgba(15,108,189,0.4); outline-offset: 2px; }
-        .gds-dropzone-dragover { background: #EAF2FA; border-color: var(--gds-blue); }
-        .gds-dropzone-error { border-color: var(--gds-error); }
-        .gds-dropzone-heading { font-size: 17px; font-weight: 600; color: var(--gds-text); margin: 14px 0 6px 0; }
-        .gds-dropzone-or { font-size: 13px; font-weight: 600; color: var(--gds-text-muted); margin: 0 0 14px 0; letter-spacing: 0.04em; }
-        .gds-upload-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
-        .gds-upload-meta-item { background: var(--gds-bg-subtle); border: 1px solid var(--gds-border); border-radius: var(--gds-radius); padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }
-        .gds-upload-meta-label { font-size: 12px; color: var(--gds-text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
-        .gds-upload-meta-value { font-size: 14px; font-weight: 600; color: var(--gds-text); }
-        @media (max-width: 560px) { .gds-upload-meta { grid-template-columns: 1fr; } }
-        .gds-file-summary { border: 1.5px solid var(--gds-success); background: #F2FAF4; border-radius: var(--gds-radius); padding: 18px 20px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
-        .gds-file-summary-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
-        .gds-file-name { font-size: 15px; font-weight: 700; color: var(--gds-text); margin: 0 0 2px 0; word-break: break-word; }
-        .gds-file-meta { font-size: 13px; color: var(--gds-text-muted); margin: 0 0 6px 0; }
-        .gds-file-status-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--gds-success); text-transform: uppercase; letter-spacing: 0.02em; }
-        .gds-file-summary-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .ru-dropzone-over { border-style: solid; }
+        .ru-dropzone-error { border-color: #fca5a5; background-color: #fff5f5; }
 
-        /* Info / privacy */
-        .gds-info-card { display: flex; gap: 12px; background: var(--gds-bg-subtle); border: 1px solid var(--gds-border); border-radius: var(--gds-radius); padding: 16px 18px; margin-bottom: 20px; }
-        .gds-info-card-title { font-size: 15px; font-weight: 700; margin: 0 0 4px 0; color: var(--gds-text); }
-        .gds-info-card-body { font-size: 14px; line-height: 1.5; color: var(--gds-text-muted); margin: 0; }
-        .gds-privacy-note { display: flex; align-items: flex-start; gap: 10px; background: var(--gds-bg-subtle); border: 1px solid var(--gds-border); border-radius: var(--gds-radius); padding: 14px 16px; margin: 4px 0 28px 0; }
-        .gds-info-icon { flex-shrink: 0; margin-top: 1px; }
-        .gds-privacy-title { font-size: 14px; font-weight: 700; color: var(--gds-text); margin: 0 0 2px 0; }
-        .gds-privacy-text { font-size: 14px; line-height: 1.5; color: var(--gds-text-muted); margin: 0; }
+        .ru-pdf-icon {
+          width: 48px; height: 48px;
+          background-color: #eff6ff;
+          border: 1px solid #bfdbfe;
+          border-radius: 6px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 20px;
+          margin-bottom: 12px;
+        }
+        .ru-dropzone-heading { font-size: 14px; font-weight: 600; color: #1e293b; margin: 0 0 6px 0; }
+        .ru-dropzone-or { font-size: 11px; font-weight: 600; color: #64748b; margin: 0 0 12px 0; text-transform: uppercase; }
 
-        /* Preferences header */
-        .gds-pref-heading { font-size: 22px; font-weight: 700; color: var(--gds-text); margin: 0 0 6px 0; }
-        .gds-pref-subheading { font-size: 15px; color: var(--gds-text-muted); margin: 0 0 20px 0; }
+        .ru-browse-btn {
+          background-color: #2563eb;
+          color: #fff;
+          border: none;
+          border-radius: 6px;
+          padding: 8px 18px;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          font-family: inherit;
+          transition: all 0.15s ease;
+        }
+        .ru-browse-btn:hover { background-color: #1d4ed8; }
 
-        /* Combobox */
-        .gds-label { display: block; font-size: 15px; font-weight: 600; color: var(--gds-text); margin-bottom: 6px; }
-        .gds-required { color: var(--gds-error); margin-left: 2px; }
-        .gds-combobox { position: relative; margin-bottom: 20px; }
-        .gds-combobox-control { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; background: var(--gds-bg); border: 1.5px solid var(--gds-border); border-radius: var(--gds-radius); transition: border-color 0.15s ease, box-shadow 0.15s ease; }
-        .gds-combobox-control:focus-within { border-color: var(--gds-blue); box-shadow: 0 0 0 3px rgba(15,108,189,0.25); }
-        .gds-input-error { border-color: var(--gds-error) !important; }
-        .gds-combobox-input { flex: 1; min-width: 0; border: none; outline: none; font-size: 16px; font-family: inherit; color: var(--gds-text); background: transparent; padding: 12px 0; }
-        .gds-combobox-input::placeholder { color: #8A929C; }
-        .gds-combobox-chevron { display: flex; align-items: center; flex-shrink: 0; }
-        .gds-combobox-listbox { position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; right: 0; max-height: 240px; overflow-y: auto; background: #fff; border: 1.5px solid var(--gds-border); border-radius: var(--gds-radius); box-shadow: 0 8px 20px rgba(0,0,0,0.12); margin: 0; padding: 6px; list-style: none; }
-        .gds-combobox-option { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; font-size: 15px; color: var(--gds-text); border-radius: 4px; cursor: pointer; }
-        .gds-combobox-option-active { background: var(--gds-bg-subtle); }
-        .gds-combobox-option-selected { font-weight: 600; color: var(--gds-blue-dark); }
-        .gds-combobox-empty { padding: 12px; font-size: 14px; color: var(--gds-text-muted); text-align: center; }
+        .ru-upload-meta {
+          display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px;
+        }
+        @media (max-width: 500px) { .ru-upload-meta { grid-template-columns: 1fr; } }
+        .ru-meta-item {
+          background-color: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 6px; padding: 10px 12px;
+        }
+        .ru-meta-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 3px; }
+        .ru-meta-value { font-size: 13px; font-weight: 600; color: #0f172a; }
 
-        /* Summary */
-        .gds-summary-card { border: 1px solid var(--gds-border); border-radius: var(--gds-radius); background: var(--gds-bg-subtle); padding: 18px 20px; margin-bottom: 24px; }
-        .gds-summary-title { font-size: 16px; font-weight: 700; margin: 0 0 12px 0; color: var(--gds-text); }
-        .gds-summary-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid var(--gds-border); }
-        .gds-summary-row:first-of-type { border-top: none; }
-        .gds-summary-label { font-size: 14px; color: var(--gds-text-muted); font-weight: 600; flex-shrink: 0; }
-        .gds-summary-value { font-size: 14px; color: var(--gds-text); font-weight: 600; text-align: right; }
-        .gds-summary-value-empty { color: #8A929C; font-weight: 400; font-style: italic; }
-        @media (max-width: 480px) { .gds-summary-row { flex-direction: column; gap: 2px; } .gds-summary-value { text-align: left; } }
+        /* File selected state */
+        .ru-file-selected {
+          border: 1px solid #a7f3d0;
+          background-color: #ecfdf5;
+          border-radius: 8px;
+          padding: 16px 20px;
+          display: flex; flex-wrap: wrap;
+          align-items: center; justify-content: space-between;
+          gap: 14px;
+        }
+        .ru-file-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+        .ru-file-pdf-icon {
+          width: 40px; height: 40px;
+          background-color: #d1fae5;
+          border: 1px solid #6ee7b7;
+          border-radius: 6px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 18px; flex-shrink: 0;
+        }
+        .ru-file-name { font-size: 14px; font-weight: 700; color: #0f172a; margin: 0 0 2px 0; word-break: break-all; }
+        .ru-file-size { font-size: 12px; color: #475569; margin: 0 0 4px 0; }
+        .ru-file-badge {
+          display: inline-flex; align-items: center; gap: 5px;
+          font-size: 11px; font-weight: 700; color: #047857;
+          text-transform: uppercase;
+        }
+        .ru-file-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-        /* Errors */
-        .gds-error { font-size: 13px; color: var(--gds-error); margin: 10px 0 0 0; font-weight: 600; }
+        /* ---- Combobox ---- */
+        .ru-combobox { position: relative; margin-bottom: 18px; }
+        .ru-label {
+          display: flex; align-items: baseline; gap: 4px;
+          font-size: 13px; font-weight: 600;
+          color: #1e293b;
+          margin-bottom: 6px;
+        }
+        .ru-required { color: #dc2626; }
+        .ru-combobox-control {
+          display: flex; align-items: center; gap: 8px;
+          min-height: 40px; padding: 0 12px;
+          background-color: #f8fafc;
+          border: 1px solid #cbd5e1;
+          border-radius: 6px;
+          transition: all 0.15s ease;
+        }
+        .ru-combobox-control:focus-within, .ru-combobox-open {
+          border-color: #2563eb;
+          background-color: #fff;
+          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .ru-input-error { border-color: #fca5a5 !important; background-color: #fff5f5 !important; }
+        .ru-combobox-input {
+          flex: 1; min-width: 0; border: none; outline: none;
+          font-size: 14px; font-family: inherit;
+          color: #0f172a; background: transparent;
+          padding: 8px 0;
+        }
+        .ru-combobox-input::placeholder { color: #94a3b8; }
+        .ru-combobox-listbox {
+          position: absolute; z-index: 20;
+          top: calc(100% + 4px); left: 0; right: 0;
+          max-height: 230px; overflow-y: auto;
+          background-color: #fff;
+          border: 1px solid #cbd5e1;
+          border-radius: 8px;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+          margin: 0; padding: 6px;
+          list-style: none;
+        }
+        .ru-combobox-option {
+          display: flex; align-items: center; justify-content: space-between;
+          gap: 8px; padding: 8px 12px;
+          font-size: 14px; color: #334155;
+          border-radius: 6px; cursor: pointer;
+          transition: background 0.1s ease;
+        }
+        .ru-combobox-active { background-color: #f1f5f9; color: #0f172a; }
+        .ru-combobox-selected { font-weight: 600; color: #2563eb; }
+        .ru-combobox-empty { padding: 12px; font-size: 13px; color: #64748b; text-align: center; }
+        .ru-error { font-size: 12px; color: #dc2626; margin: 4px 0 0 0; font-weight: 600; }
 
-        /* Buttons */
-        .gds-btn { min-height: 48px; padding: 12px 24px; font-size: 16px; font-weight: 600; border-radius: var(--gds-radius); cursor: pointer; border: 1.5px solid transparent; transition: background 0.15s ease, border-color 0.15s ease; font-family: inherit; }
-        .gds-btn:focus-visible { outline: 3px solid rgba(15,108,189,0.4); outline-offset: 2px; }
-        .gds-btn-sm { min-height: 40px; padding: 9px 16px; font-size: 14px; }
-        .gds-btn-secondary { background: var(--gds-bg); border-color: var(--gds-border); color: var(--gds-text); }
-        .gds-btn-secondary:hover { background: var(--gds-bg-subtle); }
-        .gds-btn-outline { background: var(--gds-bg); border-color: var(--gds-blue); color: var(--gds-blue-dark); }
-        .gds-btn-outline:hover { background: rgba(15,108,189,0.06); }
-        .gds-btn-text { background: transparent; border-color: transparent; color: var(--gds-error); padding-left: 8px; padding-right: 8px; }
-        .gds-btn-text:hover { background: rgba(179,38,30,0.06); }
-        .gds-btn-primary { background: var(--gds-blue); border-color: var(--gds-blue); color: #fff; }
-        .gds-btn-primary:hover:not(:disabled) { background: var(--gds-blue-dark); }
-        .gds-btn-primary:disabled { background: #B7C6D6; border-color: #B7C6D6; cursor: not-allowed; color: #fff; }
+        /* ---- Progress bar for preferences ---- */
+        .ru-pref-progress {
+          display: flex; align-items: center; gap: 10px;
+          margin-bottom: 18px;
+          padding: 8px 12px;
+          background-color: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 6px;
+        }
+        .ru-pref-bar-track {
+          flex: 1; height: 6px;
+          background-color: #e2e8f0; border-radius: 3px; overflow: hidden;
+        }
+        .ru-pref-bar-fill {
+          height: 100%;
+          background-color: #2563eb;
+          border-radius: 3px;
+          transition: width 0.3s ease;
+        }
+        .ru-pref-pct { font-size: 12px; font-weight: 700; color: #1e40af; white-space: nowrap; }
 
-        /* Actions */
-        .gds-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center; }
+        /* ---- Buttons ---- */
+        .ru-btn {
+          min-height: 40px; padding: 8px 20px;
+          font-size: 14px; font-weight: 600;
+          border-radius: 6px; cursor: pointer;
+          border: 1px solid transparent;
+          transition: all 0.15s ease; font-family: inherit;
+        }
+        .ru-btn:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+        .ru-btn-sm { min-height: 34px; padding: 6px 12px; font-size: 13px; border-radius: 4px; }
+
+        .ru-btn-ghost {
+          background-color: #ffffff;
+          border-color: #cbd5e1;
+          color: #334155;
+        }
+        .ru-btn-ghost:hover { background-color: #f1f5f9; color: #0f172a; }
+
+        .ru-btn-outline-blue {
+          background-color: #ffffff;
+          border-color: #cbd5e1;
+          color: #334155;
+        }
+        .ru-btn-outline-blue:hover { background-color: #f1f5f9; }
+
+        .ru-btn-danger-text {
+          background: transparent;
+          border-color: transparent;
+          color: #dc2626;
+          padding-left: 8px; padding-right: 8px;
+        }
+        .ru-btn-danger-text:hover { background-color: #fef2f2; }
+
+        .ru-btn-primary {
+          background-color: #2563eb;
+          border-color: #2563eb;
+          color: #ffffff;
+        }
+        .ru-btn-primary:hover:not(:disabled) { background-color: #1d4ed8; }
+        .ru-btn-primary:disabled { background-color: #94a3b8; border-color: #94a3b8; cursor: not-allowed; color: #ffffff; }
+
+        .ru-actions {
+          display: flex; flex-wrap: wrap; gap: 12px;
+          justify-content: space-between; align-items: center;
+          margin-top: 28px;
+        }
         @media (max-width: 480px) {
-          .gds-actions { flex-direction: column-reverse; align-items: stretch; }
-          .gds-actions .gds-btn { width: 100%; }
-          .gds-file-summary { flex-direction: column; align-items: flex-start; }
-          .gds-file-summary-actions { width: 100%; }
-          .gds-file-summary-actions .gds-btn { flex: 1; }
+          .ru-actions { flex-direction: column-reverse; align-items: stretch; }
+          .ru-actions .ru-btn { width: 100%; text-align: center; }
         }
-        .gds-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-        @media (prefers-reduced-motion: reduce) { .gds-progress-fill { transition: none; } }
+        .ru-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
       `}</style>
 
-      <div className="gds-container">
-        {/* Progress */}
-        <OnboardingProgressBar percent={PROGRESS_PERCENT} stepIndicator={LABELS.stepIndicator} stepName={LABELS.stepName} />
+      <div className="ru-wrapper">
 
-        {/* Header */}
-        <header>
-          <h1 className="gds-page-title">{LABELS.pageTitle}</h1>
-          <p className="gds-page-subtitle">{LABELS.pageSubtitle}</p>
-        </header>
-
-        {/* ===== TWO-COLUMN LAYOUT ===== */}
-        <div className="gds-two-col">
-
-          {/* ── LEFT: Upload ── */}
-          <div className="gds-col-panel">
-            <span className="gds-panel-heading">📄 Resume Upload</span>
-            <section className="gds-section" aria-labelledby="section-upload" style={{ marginBottom: 0 }}>
-              {!file && <span className="gds-visually-hidden" id="section-upload" />}
-              <UploadCard
-                file={file} error={fileError} isDragOver={isDragOver}
-                onBrowseClick={handleBrowseClick} onFileChange={handleFileChange}
-                onRemove={handleRemove} onReplaceClick={handleBrowseClick}
-                dragHandlers={dragHandlers} inputRef={inputRef}
-              />
-            </section>
+        {/* ======== HERO HEADER ======== */}
+        <div className="ru-hero">
+          <div className="ru-step-chip">
+            <div className="ru-step-dot" />
+            {LABELS.stepIndicator} — {LABELS.stepName}
           </div>
-
-          {/* ── RIGHT: Preferences ── */}
-          <div className="gds-col-panel">
-            <span className="gds-panel-heading">🎯 Internship Preferences</span>
-
-            <div className="gds-section" style={{ marginBottom: 16 }}>
-              {/* Locations */}
-              <section aria-labelledby="section-locations">
-                <h2 className="gds-section-title" id="section-locations">{LABELS.sectionLocationsTitle}</h2>
-                <div className="gds-section-grid" style={{ gridTemplateColumns: '1fr' }}>
-                  <SearchableSelect
-                    id="preferredLocation" label={LABELS.preferredLocation}
-                    value={preferredLocation} onChange={setPreferredLocation}
-                    onBlurValidate={() => setTouched((p) => ({ ...p, alternateLocation: true }))}
-                    options={INDIAN_STATES} placeholder={LABELS.preferredLocationPlaceholder}
-                  />
-                  <SearchableSelect
-                    id="alternateLocation" label={LABELS.alternateLocation}
-                    value={alternateLocation} onChange={setAlternateLocation}
-                    onBlurValidate={() => setTouched((p) => ({ ...p, alternateLocation: true }))}
-                    options={INDIAN_STATES} placeholder={LABELS.alternateLocationPlaceholder}
-                    error={locationError}
-                  />
-                </div>
-              </section>
-
-              {/* Roles */}
-              <section aria-labelledby="section-roles" style={{ marginTop: 4 }}>
-                <h2 className="gds-section-title" id="section-roles">{LABELS.sectionRolesTitle}</h2>
-                <div className="gds-section-grid" style={{ gridTemplateColumns: '1fr' }}>
-                  <SearchableSelect
-                    id="priorityRole" label={LABELS.priorityRole}
-                    value={priorityRole} onChange={setPriorityRole}
-                    onBlurValidate={() => setTouched((p) => ({ ...p, secondaryRole: true }))}
-                    options={INTERNSHIP_ROLES} placeholder={LABELS.priorityRolePlaceholder}
-                  />
-                  <SearchableSelect
-                    id="secondaryRole" label={LABELS.secondaryRole}
-                    value={secondaryRole} onChange={setSecondaryRole}
-                    onBlurValidate={() => setTouched((p) => ({ ...p, secondaryRole: true }))}
-                    options={INTERNSHIP_ROLES} placeholder={LABELS.secondaryRolePlaceholder}
-                    error={roleError}
-                  />
-                </div>
-              </section>
-
-              {/* Internship Details — Sector & Fields */}
-              <section aria-labelledby="section-details" style={{ marginTop: 4 }}>
-                <h2 className="gds-section-title" id="section-details">{LABELS.sectionInternshipDetailsTitle}</h2>
-                <div className="gds-section-grid" style={{ gridTemplateColumns: '1fr' }}>
-                  <SearchableSelect
-                    id="sector" label={LABELS.sector}
-                    value={sector} onChange={setSector}
-                    options={SECTOR_OPTIONS} placeholder={LABELS.sectorPlaceholder}
-                  />
-                  <SearchableSelect
-                    id="fields" label={LABELS.fields}
-                    value={fields} onChange={setFields}
-                    options={FIELDS_OPTIONS} placeholder={LABELS.fieldsPlaceholder}
-                  />
-                </div>
-              </section>
-            </div>
-
-          </div>
+          <h1 className="ru-hero-title">{LABELS.pageTitle}</h1>
+          <p className="ru-hero-sub">{LABELS.pageSubtitle}</p>
         </div>
 
-        {/* ===== BOTTOM ACTIONS ===== */}
-        <div className="gds-actions" style={{ marginTop: 28 }}>
-          <button type="button" className="gds-btn gds-btn-secondary" onClick={() => navigate('/onboarding/student-details')}>
+        {/* ======== TWO-COLUMN LAYOUT ======== */}
+        <div className="ru-layout">
+
+          {/* ──────────────────────────────────
+              LEFT: Resume Upload
+          ─────────────────────────────────── */}
+          <div className="ru-card">
+            <p className="ru-card-title">Resume Upload</p>
+
+            {/* Hidden file input supporting .pdf and .docx */}
+            <input 
+              ref={inputRef} 
+              type="file" 
+              accept=".pdf,.docx" 
+              className="ru-visually-hidden" 
+              onChange={handleFileChange} 
+              aria-hidden="true" 
+              tabIndex={-1} 
+            />
+
+            {/* Parsing loader */}
+            {isUploading && (
+              <div className="ru-upload-loading" style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                padding: '30px 20px', border: '1px solid #bfdbfe', backgroundColor: '#eff6ff',
+                borderRadius: '8px', marginBottom: '16px', textAlign: 'center'
+              }}>
+                <div className="ru-loading-spinner-wrapper" style={{ marginBottom: '12px' }}>
+                  <svg className="animate-spin" width="32" height="32" viewBox="0 0 24 24" fill="none" style={{
+                    animation: 'spin 1s linear infinite',
+                    color: '#2563eb'
+                  }}>
+                    <circle cx="12" cy="12" r="10" stroke="rgba(37,99,235,0.15)" strokeWidth="3" />
+                    <path d="M12 2a10 10 0 0 1 10 10" stroke="#2563eb" strokeWidth="3" strokeLinecap="round" />
+                  </svg>
+                  <style>{`
+                    @keyframes spin {
+                      to { transform: rotate(360deg); }
+                    }
+                  `}</style>
+                </div>
+                <p className="ru-loading-text" style={{ fontSize: '14px', fontWeight: '600', color: '#1e40af', margin: 0 }}>
+                  Analyzing your resume — this may take up to a minute on first use
+                </p>
+                <p style={{ fontSize: '11px', color: '#60a5fa', marginTop: '4px', marginBottom: 0 }}>
+                  Render cold-start: please wait while our AI parser spins up...
+                </p>
+              </div>
+            )}
+
+            {/* Error state with Skip / Manual override */}
+            {uploadError && (
+              <div className="ru-upload-error-banner" style={{
+                border: '1px solid #fca5a5', backgroundColor: '#fff5f5', borderRadius: '8px',
+                padding: '16px 20px', marginBottom: '16px'
+              }}>
+                <p style={{ fontSize: '14px', fontWeight: '600', color: '#dc2626', margin: '0 0 8px 0' }}>
+                  {uploadError}
+                </p>
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    setUploadError("");
+                    setParsedResumeData({
+                      name: "", email: "", phone: "", cgpa: null,
+                      skills: [], frameworks: [], tools: [], roles: []
+                    });
+                  }} 
+                  style={{
+                    backgroundColor: 'transparent', border: 'none', color: '#2563eb',
+                    fontSize: '13px', fontWeight: '700', cursor: 'pointer', padding: 0, textDecoration: 'underline'
+                  }}
+                >
+                  Skip and enter your skills manually
+                </button>
+              </div>
+            )}
+
+            {file && !isUploading && (
+              /* File selected state */
+              <div className="ru-file-selected" role="status" style={{ marginBottom: '16px' }}>
+                <div className="ru-file-left">
+                  <div className="ru-file-pdf-icon">📑</div>
+                  <div>
+                    <p className="ru-file-name">{file.name}</p>
+                    <p className="ru-file-size">{formatFileSize(file.size)}</p>
+                    <span className="ru-file-badge">✓ {LABELS.fileSelectedStatus}</span>
+                  </div>
+                </div>
+                <div className="ru-file-actions">
+                  <button type="button" className="ru-btn ru-btn-outline-blue ru-btn-sm" onClick={handleBrowseClick}>{LABELS.actionReplace}</button>
+                  <button type="button" className="ru-btn ru-btn-danger-text ru-btn-sm" onClick={handleRemove}>{LABELS.actionRemove}</button>
+                </div>
+              </div>
+            )}
+
+            {!file && !isUploading && (
+              /* Drop zone */
+              <div
+                className={`ru-dropzone${isDragOver ? " ru-dropzone-over" : ""}${fileError ? " ru-dropzone-error" : ""}`}
+                role="button" tabIndex={0}
+                aria-label="Upload resume. Drag and drop a PDF or DOCX file here, or activate to browse."
+                onClick={handleBrowseClick}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleBrowseClick(); } }}
+                {...dragHandlers}
+                style={{ marginBottom: '16px' }}
+              >
+                <div className="ru-pdf-icon">📄</div>
+                <p className="ru-dropzone-heading">{LABELS.uploadHeading}</p>
+                <p className="ru-dropzone-or">{LABELS.uploadOr}</p>
+                <button type="button" className="ru-browse-btn" onClick={(e) => { e.stopPropagation(); handleBrowseClick(); }}>
+                  {LABELS.uploadBrowseBtn}
+                </button>
+              </div>
+            )}
+
+            {/* Extracted preview list (editable tags UI) */}
+            {parsedResumeData && !isUploading && (
+              <div className="ru-parsed-preview" style={{
+                border: '1px solid #e2e8f0', borderRadius: '8px', padding: '16px',
+                backgroundColor: '#f8fafc', marginBottom: '16px'
+              }}>
+                <h4 style={{ fontSize: '13px', fontWeight: '700', color: '#1e3a8a', marginTop: 0, marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Extracted Profile Summary (Review & Edit)
+                </h4>
+
+                {/* Name, Email, Phone, CGPA Fields */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '16px' }}>
+                  <div>
+                    <label style={{ fontSize: '11px', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '3px' }}>Name</label>
+                    <input 
+                      type="text" 
+                      value={parsedResumeData.name || ""} 
+                      onChange={(e) => setParsedResumeData({ ...parsedResumeData, name: e.target.value })}
+                      style={{ width: '100%', padding: '6px 10px', fontSize: '13px', border: '1px solid #cbd5e1', borderRadius: '4px', background: '#fff' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '11px', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '3px' }}>Email</label>
+                    <input 
+                      type="text" 
+                      value={parsedResumeData.email || ""} 
+                      onChange={(e) => setParsedResumeData({ ...parsedResumeData, email: e.target.value })}
+                      style={{ width: '100%', padding: '6px 10px', fontSize: '13px', border: '1px solid #cbd5e1', borderRadius: '4px', background: '#fff' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '11px', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '3px' }}>Phone</label>
+                    <input 
+                      type="text" 
+                      value={parsedResumeData.phone || ""} 
+                      onChange={(e) => setParsedResumeData({ ...parsedResumeData, phone: e.target.value })}
+                      style={{ width: '100%', padding: '6px 10px', fontSize: '13px', border: '1px solid #cbd5e1', borderRadius: '4px', background: '#fff' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '11px', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '3px' }}>CGPA</label>
+                    <input 
+                      type="text" 
+                      value={parsedResumeData.cgpa || ""} 
+                      onChange={(e) => setParsedResumeData({ ...parsedResumeData, cgpa: e.target.value ? parseFloat(e.target.value) || null : null })}
+                      style={{ width: '100%', padding: '6px 10px', fontSize: '13px', border: '1px solid #cbd5e1', borderRadius: '4px', background: '#fff' }}
+                    />
+                  </div>
+                </div>
+
+                {/* Extracted Skills List */}
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '6px' }}>Extracted Skills</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {(parsedResumeData.skills || []).map((skill, index) => (
+                      <span key={index} style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '4px',
+                        padding: '3px 8px', borderRadius: '100px', backgroundColor: '#eff6ff',
+                        border: '1px solid #bfdbfe', fontSize: '12px', fontWeight: '600', color: '#1e40af'
+                      }}>
+                        {skill}
+                        <button 
+                          type="button" 
+                          onClick={() => {
+                            const newSkills = [...(parsedResumeData.skills || [])];
+                            newSkills.splice(index, 1);
+                            setParsedResumeData({ ...parsedResumeData, skills: newSkills });
+                          }}
+                          style={{ border: 'none', background: 'none', color: '#3b82f6', cursor: 'pointer', padding: 0, fontSize: '10px', fontWeight: 'bold' }}
+                        >
+                          ✕
+                        </button>
+                      </span>
+                    ))}
+                    <input 
+                      type="text" 
+                      placeholder="+ Add skill"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const val = e.currentTarget.value.trim();
+                          if (val) {
+                            setParsedResumeData({ ...parsedResumeData, skills: [...(parsedResumeData.skills || []), val] });
+                            e.currentTarget.value = "";
+                          }
+                        }
+                      }}
+                      style={{ border: '1px dashed #cbd5e1', background: 'transparent', padding: '2px 8px', fontSize: '12px', borderRadius: '100px', outline: 'none', width: '90px' }}
+                    />
+                  </div>
+                </div>
+
+                {/* Frameworks */}
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '6px' }}>Frameworks</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {(parsedResumeData.frameworks || []).map((fw, index) => (
+                      <span key={index} style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '4px',
+                        padding: '3px 8px', borderRadius: '100px', backgroundColor: '#f5f3ff',
+                        border: '1px solid #ddd6fe', fontSize: '12px', fontWeight: '600', color: '#5b21b6'
+                      }}>
+                        {fw}
+                        <button 
+                          type="button" 
+                          onClick={() => {
+                            const newFw = [...(parsedResumeData.frameworks || [])];
+                            newFw.splice(index, 1);
+                            setParsedResumeData({ ...parsedResumeData, frameworks: newFw });
+                          }}
+                          style={{ border: 'none', background: 'none', color: '#8b5cf6', cursor: 'pointer', padding: 0, fontSize: '10px', fontWeight: 'bold' }}
+                        >
+                          ✕
+                        </button>
+                      </span>
+                    ))}
+                    <input 
+                      type="text" 
+                      placeholder="+ Add framework"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const val = e.currentTarget.value.trim();
+                          if (val) {
+                            setParsedResumeData({ ...parsedResumeData, frameworks: [...(parsedResumeData.frameworks || []), val] });
+                            e.currentTarget.value = "";
+                          }
+                        }
+                      }}
+                      style={{ border: '1px dashed #cbd5e1', background: 'transparent', padding: '2px 8px', fontSize: '12px', borderRadius: '100px', outline: 'none', width: '110px' }}
+                    />
+                  </div>
+                </div>
+
+                {/* Tools */}
+                <div style={{ marginBottom: '0' }}>
+                  <label style={{ fontSize: '11px', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '6px' }}>Tools</label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {(parsedResumeData.tools || []).map((tool, index) => (
+                      <span key={index} style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '4px',
+                        padding: '3px 8px', borderRadius: '100px', backgroundColor: '#fdf2f8',
+                        border: '1px solid #fbcfe8', fontSize: '12px', fontWeight: '600', color: '#9d174d'
+                      }}>
+                        {tool}
+                        <button 
+                          type="button" 
+                          onClick={() => {
+                            const newTools = [...(parsedResumeData.tools || [])];
+                            newTools.splice(index, 1);
+                            setParsedResumeData({ ...parsedResumeData, tools: newTools });
+                          }}
+                          style={{ border: 'none', background: 'none', color: '#ec4899', cursor: 'pointer', padding: 0, fontSize: '10px', fontWeight: 'bold' }}
+                        >
+                          ✕
+                        </button>
+                      </span>
+                    ))}
+                    <input 
+                      type="text" 
+                      placeholder="+ Add tool"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          const val = e.currentTarget.value.trim();
+                          if (val) {
+                            setParsedResumeData({ ...parsedResumeData, tools: [...(parsedResumeData.tools || []), val] });
+                            e.currentTarget.value = "";
+                          }
+                        }
+                      }}
+                      style={{ border: '1px dashed #cbd5e1', background: 'transparent', padding: '2px 8px', fontSize: '12px', borderRadius: '100px', outline: 'none', width: '90px' }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {fileError && <p className="ru-error" role="alert">{fileError}</p>}
+
+            {/* Meta info */}
+            <div className="ru-upload-meta">
+              <div className="ru-meta-item">
+                <p className="ru-meta-label">Supported Formats</p>
+                <p className="ru-meta-value">PDF, DOCX</p>
+              </div>
+              <div className="ru-meta-item">
+                <p className="ru-meta-label">{LABELS.uploadSizeLabel}</p>
+                <p className="ru-meta-value">{LABELS.uploadSizeValue}</p>
+              </div>
+              <div className="ru-meta-item">
+                <p className="ru-meta-label">Accepted File</p>
+                <p className="ru-meta-value">Resume PDF/DOCX</p>
+              </div>
+            </div>
+          </div>
+
+          {/* ──────────────────────────────────
+              RIGHT: Preferences
+          ─────────────────────────────────── */}
+          <div className="ru-card">
+            <p className="ru-card-title">{LABELS.prefTitle}</p>
+
+            {/* Preferences completion progress */}
+            <div className="ru-pref-progress">
+              <span className="ru-pref-pct">{filledPrefs}/6 filled</span>
+              <div className="ru-pref-bar-track">
+                <div className="ru-pref-bar-fill" style={{ width: `${prefsProgress}%` }} />
+              </div>
+              <span className="ru-pref-pct">{prefsProgress}%</span>
+            </div>
+
+            {/* Locations */}
+            <p className="ru-section-heading">{LABELS.sectionLocationsTitle}</p>
+            <SearchableSelect id="preferredLocation" label={LABELS.preferredLocation}
+              value={preferredLocation} onChange={setPreferredLocation}
+              onBlurValidate={() => setTouched((p) => ({ ...p, alternateLocation: true }))}
+              options={INDIAN_STATES} placeholder={LABELS.preferredLocationPlaceholder}
+            />
+            <SearchableSelect id="alternateLocation" label={LABELS.alternateLocation}
+              value={alternateLocation} onChange={setAlternateLocation}
+              onBlurValidate={() => setTouched((p) => ({ ...p, alternateLocation: true }))}
+              options={INDIAN_STATES} placeholder={LABELS.alternateLocationPlaceholder}
+              error={locationError}
+            />
+
+            {/* Roles */}
+            <p className="ru-section-heading">{LABELS.sectionRolesTitle}</p>
+            <SearchableSelect id="priorityRole" label={LABELS.priorityRole}
+              value={priorityRole} onChange={setPriorityRole}
+              onBlurValidate={() => setTouched((p) => ({ ...p, secondaryRole: true }))}
+              options={INTERNSHIP_ROLES} placeholder={LABELS.priorityRolePlaceholder}
+            />
+            <SearchableSelect id="secondaryRole" label={LABELS.secondaryRole}
+              value={secondaryRole} onChange={setSecondaryRole}
+              onBlurValidate={() => setTouched((p) => ({ ...p, secondaryRole: true }))}
+              options={INTERNSHIP_ROLES} placeholder={LABELS.secondaryRolePlaceholder}
+              error={roleError}
+            />
+
+            {/* Details */}
+            <p className="ru-section-heading">{LABELS.sectionInternshipDetailsTitle}</p>
+            <SearchableSelect id="sector" label={LABELS.sector}
+              value={sector} onChange={setSector}
+              options={SECTOR_OPTIONS} placeholder={LABELS.sectorPlaceholder}
+            />
+            <SearchableSelect id="fields" label={LABELS.fields}
+              value={fields} onChange={setFields}
+              options={FIELDS_OPTIONS} placeholder={LABELS.fieldsPlaceholder}
+            />
+          </div>
+
+        </div>
+
+        {/* ======== BOTTOM ACTIONS ======== */}
+        <div className="ru-actions">
+          <button type="button" className="ru-btn ru-btn-ghost" onClick={() => navigate('/onboarding/student-details')}>
             {LABELS.btnPrevious}
           </button>
-          <button type="button" className="gds-btn gds-btn-primary" disabled={!isFormComplete} onClick={handleSubmit}>
+          <button type="button" className="ru-btn ru-btn-primary" disabled={!isFormComplete} onClick={handleSubmit}>
             {LABELS.btnFindInternships}
           </button>
         </div>
+
       </div>
     </div>
   );

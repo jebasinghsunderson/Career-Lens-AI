@@ -7,6 +7,7 @@ import { User, Mail, Phone, Lock, MapPin } from 'lucide-react';
 import { FormField } from './FormField';
 import { SelectField } from './SelectField';
 import { Button } from './Button';
+import { useLanguage } from '../context/LanguageContext';
 
 const studentSchema = z.object({
   fullName: z.string().min(3, 'Full name must contain at least 3 characters'),
@@ -23,6 +24,7 @@ type StudentFormValues = z.infer<typeof studentSchema>;
 
 export const StudentForm: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const {
     register,
     handleSubmit,
@@ -81,42 +83,42 @@ export const StudentForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
       <FormField
-        label="Full Name"
+        label={t('form.fullName')}
         icon={<User size={18} />}
-        placeholder="Enter your full name"
+        placeholder={t('form.fullNamePlace')}
         {...register('fullName')}
         error={errors.fullName?.message}
       />
       
       <FormField
-        label="Email"
+        label={t('form.email')}
         type="email"
         icon={<Mail size={18} />}
-        placeholder="Enter your email"
+        placeholder={t('form.emailPlace')}
         {...register('email')}
         error={errors.email?.message}
       />
       
       <FormField
-        label="Phone Number"
+        label={t('form.phone')}
         type="tel"
         icon={<Phone size={18} />}
-        placeholder="Enter your phone number"
+        placeholder={t('form.phonePlace')}
         {...register('phone')}
         error={errors.phone?.message}
       />
       
       <FormField
-        label="Password"
+        label={t('form.password')}
         type="password"
         icon={<Lock size={18} />}
-        placeholder="Create a password"
+        placeholder={t('form.passCreate')}
         {...register('password')}
         error={errors.password?.message}
       />
       
       <SelectField
-        label="State/District"
+        label={t('form.stateDist')}
         icon={<MapPin size={18} />}
         options={locations}
         {...register('location')}
@@ -134,14 +136,14 @@ export const StudentForm: React.FC = () => {
         </div>
         <div className="text-sm">
           <label htmlFor="terms-student" className="font-medium text-gray-700">
-            I agree to the <a href="#" className="text-blue-600 hover:underline">Terms of Use</a>
+            {t('form.iAgree')} <a href="#" className="text-blue-600 hover:underline">{t('form.terms')}</a>
           </label>
           {errors.terms && <p className="text-xs text-red-500 mt-1">{errors.terms.message}</p>}
         </div>
       </div>
       
       <Button type="submit" className="mt-2">
-        Sign Up as Student
+        {t('form.signUpStudent')}
       </Button>
     </form>
   );

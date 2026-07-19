@@ -1,5 +1,6 @@
 import React from 'react';
 import clsx from 'clsx';
+import { useLanguage } from '../context/LanguageContext';
 
 type Role = 'student' | 'company';
 
@@ -9,6 +10,7 @@ interface RoleTabsProps {
 }
 
 export const RoleTabs: React.FC<RoleTabsProps> = ({ activeRole, onChange }) => {
+  const { t } = useLanguage();
   return (
     <div className="flex items-center gap-6 mb-6 border-b border-gray-100 pb-2">
       <button
@@ -20,7 +22,7 @@ export const RoleTabs: React.FC<RoleTabsProps> = ({ activeRole, onChange }) => {
             : "text-slate-400 hover:text-slate-600"
         )}
       >
-        Student
+        {t('auth.student')}
         {activeRole === 'student' && (
           <span className="absolute bottom-[-9px] left-0 w-full h-[3px] bg-blue-800 rounded-t-full" />
         )}
@@ -34,7 +36,7 @@ export const RoleTabs: React.FC<RoleTabsProps> = ({ activeRole, onChange }) => {
             : "text-slate-400 hover:text-slate-600"
         )}
       >
-        Company
+        {t('auth.company')}
         {activeRole === 'company' && (
           <span className="absolute bottom-[-9px] left-0 w-full h-[3px] bg-blue-800 rounded-t-full" />
         )}
