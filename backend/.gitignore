@@ -1,7 +1,0 @@
-venv/
-__pycache__/
-*.pyc
-.env
-pdf_text_test.
-sample_resumes/
-uploads/
