@@ -397,6 +397,7 @@ export default function ResumeUploadPage() {
   const [file, setFile] = useState(null);
   const [fileError, setFileError] = useState("");
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const dragCounter = useRef(0);
   const inputRef = useRef(null);
 
@@ -439,10 +440,72 @@ export default function ResumeUploadPage() {
 
   const dragHandlers = { onDragEnter: handleDragEnter, onDragLeave: handleDragLeave, onDragOver: handleDragOver, onDrop: handleDrop };
 
-  const handleSubmit = () => {
-    if (!isFormComplete) return;
-    console.log("Submitting:", { file, preferredLocation, alternateLocation, priorityRole, secondaryRole, sector, fields });
-    navigate('/recommended');
+  const handleSubmit = async () => {
+    if (!isFormComplete || isUploading) return;
+    setIsUploading(true);
+    setFileError("");
+
+    try {
+      // 1. Upload file to Edlyn Parser Backend (Port 8000)
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const parseResponse = await fetch("http://127.0.0.1:8000/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!parseResponse.ok) {
+        throw new Error(`Resume parsing failed with status: ${parseResponse.statusText}`);
+      }
+
+      const parsedData = await parseResponse.json();
+
+      // Log results exactly as in Edlyn's dummy frontend procedure
+      console.clear();
+      console.log("========== RESUME PARSER ==========");
+      console.log("Name:", parsedData.name);
+      console.log("Email:", parsedData.email);
+      console.log("Phone:", parsedData.phone);
+      console.log("CGPA:", parsedData.cgpa);
+      console.log("Skills:", parsedData.skills);
+      console.log("Frameworks:", parsedData.frameworks);
+      console.log("Tools:", parsedData.tools);
+      console.log("Roles:", parsedData.roles);
+      console.log("==================================");
+
+      // Save to localStorage for other pages
+      localStorage.setItem("parsedResume", JSON.stringify(parsedData));
+
+      // 2. Fetch matches from Model Recommendation Server (Port 8001)
+      // Build a query role using priority, secondary, and parsed roles/skills
+      const queryRole = `${priorityRole} ${secondaryRole} ${parsedData.roles?.join(" ") || ""} ${parsedData.skills?.join(" ") || ""}`.trim();
+      
+      const recommendResponse = await fetch("http://127.0.0.1:8001/recommend", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          role: queryRole,
+          top_k: 5
+        }),
+      });
+
+      if (!recommendResponse.ok) {
+        throw new Error(`Recommendation search failed with status: ${recommendResponse.statusText}`);
+      }
+
+      const recommendations = await recommendResponse.json();
+      localStorage.setItem("recommendedCompanies", JSON.stringify(recommendations));
+
+      navigate('/recommended');
+    } catch (err) {
+      console.error("UPLOAD/MATCH ERROR:", err);
+      setFileError(`Integration error: ${err.message || err.toString()}`);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -716,8 +779,13 @@ export default function ResumeUploadPage() {
           <button type="button" className="gds-btn gds-btn-secondary" onClick={() => navigate('/onboarding/student-details')}>
             {LABELS.btnPrevious}
           </button>
-          <button type="button" className="gds-btn gds-btn-primary" disabled={!isFormComplete} onClick={handleSubmit}>
-            {LABELS.btnFindInternships}
+          <button 
+            type="button" 
+            className="gds-btn gds-btn-primary" 
+            disabled={!isFormComplete || isUploading} 
+            onClick={handleSubmit}
+          >
+            {isUploading ? "Analyzing & Matching..." : LABELS.btnFindInternships}
           </button>
         </div>
       </div>

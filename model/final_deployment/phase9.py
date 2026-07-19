@@ -139,19 +139,19 @@ def recommend(role, top_k=TOP_K):
 # Demo
 # ==========================================================
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
-#     while True:
+    while True:
 
-#         role = input("\nEnter Role (or exit): ")
+        role = input("\nEnter Role (or exit): ")
 
-#         if role.lower() == "exit":
-#             break
+        if role.lower() == "exit":
+            break
 
-#         results = recommend(role)
+        results = recommend(role)
 
-#         print("\nRecommendations\n")
+        print("\nRecommendations\n")
 
-#         for r in results:
+        for r in results:
 
-#             print(r)
+            print(r)

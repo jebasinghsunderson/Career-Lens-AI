@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { TopBar } from "../components/TopBar";
 import { Header } from "../components/Header";
@@ -328,6 +328,34 @@ function FlashCard({ company, index }) {
 export default function RecommendedCompaniesPage() {
   const navigate = useNavigate();
 
+  // Load recommended companies dynamically from localStorage on every mount
+  const [recommendedList, setRecommendedList] = useState(RECOMMENDED);
+  const [studentName, setStudentName] = useState("");
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("recommendedCompanies");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setRecommendedList(parsed);
+        }
+      }
+    } catch (e) {
+      console.warn("Could not read recommendedCompanies from localStorage:", e);
+    }
+
+    try {
+      const stored = localStorage.getItem("parsedResume");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setStudentName(parsed.name || "");
+      }
+    } catch (e) {
+      console.warn("Could not read parsedResume from localStorage:", e);
+    }
+  }, []);
+
   // Filter state
   const [filterState, setFilterState] = useState("");
   const [filterDistrict, setFilterDistrict] = useState("");
@@ -395,7 +423,7 @@ export default function RecommendedCompaniesPage() {
           </div>
 
           <h1 style={{ margin: "0 0 10px", fontSize: 34, fontWeight: 900, color: "#0F172A", letterSpacing: "-0.03em", lineHeight: 1.2 }}>
-            Your Top 5 Recommended Companies
+            {studentName ? `${studentName}'s Top ${recommendedList.length} Recommended Companies` : `Your Top ${recommendedList.length} Recommended Companies`}
           </h1>
           <p style={{ margin: 0, fontSize: 16, color: "#64748B", maxWidth: 580, lineHeight: 1.65 }}>
             Based on your resume and internship preferences, our AI matched you with these companies. Swipe through your personalised matches below.
@@ -458,7 +486,7 @@ export default function RecommendedCompaniesPage() {
             paddingBottom: 8,
           }}
         >
-          {RECOMMENDED.map((co, i) => (
+          {recommendedList.map((co, i) => (
             <FlashCard key={co.name} company={co} index={i} />
           ))}
         </div>

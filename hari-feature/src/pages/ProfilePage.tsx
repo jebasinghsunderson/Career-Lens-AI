@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { TopBar } from '../components/TopBar';
 import { Header } from '../components/Header';
 import { NavBar } from '../components/NavBar';
 import { User, Briefcase, GraduationCap, MapPin, Award, CheckCircle } from 'lucide-react';
 
 export const ProfilePage: React.FC = () => {
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("parsedResume");
+      if (stored) setProfile(JSON.parse(stored));
+    } catch (e) {
+      console.warn("Could not read parsedResume:", e);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <TopBar />
@@ -37,15 +48,15 @@ export const ProfilePage: React.FC = () => {
             {/* User Info */}
             <div className="mt-8">
               <h1 className="text-3xl font-extrabold text-slate-900 flex items-center gap-2">
-                John Doe
+                {profile?.name || "John Doe"}
                 <CheckCircle size={20} className="text-green-500" />
               </h1>
-              <p className="text-lg text-slate-600 mt-1">Aspiring Product Manager</p>
+              <p className="text-lg text-slate-600 mt-1">{profile?.roles?.[0] || "Aspiring Product Manager"}</p>
               
               <div className="flex flex-wrap gap-6 mt-4 text-sm font-medium text-slate-600">
                 <div className="flex items-center gap-2">
                   <MapPin size={18} className="text-slate-400" />
-                  New Delhi, India
+                  {profile?.location || "New Delhi, India"}
                 </div>
                 <div className="flex items-center gap-2">
                   <GraduationCap size={18} className="text-slate-400" />
@@ -53,7 +64,7 @@ export const ProfilePage: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Award size={18} className="text-slate-400" />
-                  85% Match for Internships
+                  {profile?.cgpa ? `CGPA: ${profile.cgpa}` : "85% Match for Internships"}
                 </div>
               </div>
             </div>
@@ -66,6 +77,32 @@ export const ProfilePage: React.FC = () => {
                     Highly motivated computer science graduate with a passion for building scalable web applications. Eager to apply my technical skills and learn from industry leaders through a PM Internship. I have experience with React, Node.js, and Python.
                   </p>
                 </div>
+
+                {profile?.skills && profile.skills.length > 0 && (
+                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                    <h3 className="text-xl font-bold text-slate-800 mb-4">Parsed Skills</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {profile.skills.map((skill: string) => (
+                        <span key={skill} className="px-3.5 py-1.5 bg-blue-50 text-blue-700 border border-blue-100 rounded-xl text-sm font-semibold">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {profile?.frameworks && profile.frameworks.length > 0 && (
+                  <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                    <h3 className="text-xl font-bold text-slate-800 mb-4">Parsed Frameworks</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {profile.frameworks.map((fw: string) => (
+                        <span key={fw} className="px-3.5 py-1.5 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-xl text-sm font-semibold">
+                          {fw}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
                   <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
